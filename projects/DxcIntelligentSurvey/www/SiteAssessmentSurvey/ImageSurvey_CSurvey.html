@@ -1,0 +1,942 @@
+﻿
+<!--
+    Image survey is performed through conducted survey.
+-->
+
+<!DOCTYPE html >
+<html>
+<head>
+    <meta charset="utf-8" />
+    <!-- Activate IE9 document mode, if available. -->
+    <!-- If missing, the WebBrowser control on Windows runs in default IE8 mode which is not supported by JSBridge. -->
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <meta name="viewport" content="width=device-width" />
+    <!-- Defined iOS viewport -->
+    <!-- If missing, the UIWebView control on iOS zooms out the web page and allows the pinch zoom. -->
+    <!--<meta name="viewport" content="initial-scale=1, minimum-scale=0, maximum-scale=1, user-scalable=no">-->
+    <style type="text/css">
+        body
+        {
+            font-family: 'Segoe UI' ,Tahoma,Arial;
+            font-size: 100%;
+            color: #000;
+            margin: 10px;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        .body_content
+        {
+            font-family: Segoe UI, Arial, sans-serif;
+        }
+        .dropItem
+        {
+            /*width: 170px;
+            height: 170px;
+            padding: 10px;*/
+            border: 1px solid #fff;
+        }
+        
+        #t1, #t5
+        {
+            border: 1px solid #aaaaaa;
+            background-size: cover;
+        }
+        .border
+        {
+            border: 1px solid #000 !important;
+        }
+        .cla
+        {
+            background-size: 100%;
+        }
+        
+        .auto-style1
+        {
+            width: 192px;
+        }
+        .circelDrop
+        {
+            height: 98%;
+            width: 98%;
+            float: left;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+        
+        
+        .circelDrop img
+        {
+            width: 100%; /*height: 100%;
+                border-radius: 50%;*/
+            display: block;
+        }
+        .sqaureDrop
+        {
+            height: 98%;
+            width: 98%;
+            position: relative;
+            overflow: hidden;
+        }
+        .sqaureDrop img
+        {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .circle
+        {
+            width: 150px;
+            height: 150px;
+            float: left;
+            border: 1px solid #ccc;
+            margin: 0px;
+            padding: 0px;
+            border-radius: 50%;
+            vertical-align: middle;
+        }
+        
+        .circle img
+        {
+            border-radius: 50%;
+            border: 1px solid #000;
+            display: block;
+        }
+        
+        .triangle
+        {
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            position: relative;
+            border-bottom: 100px solid white;
+            overflow: hidden;
+            margin: 15px;
+        }
+        button
+        {
+            width: 66px;
+            height: 24px;
+        }
+         #imageContent table
+        {
+            width: 500px;
+            height:500px;
+        }
+        
+        #divadi1
+        {
+            width: 600px;
+            padding: 10px;
+            height:70px;
+        }
+        
+        
+        
+        @media screen and (max-width:480px)
+        {
+          #imageContent table
+            {
+                width: 80%;
+                 height:250px;
+            }
+        
+            #divadi1
+            {
+                width: 300px;
+                padding: 0;
+                height:70px;
+               
+            }       
+        }
+    </style>
+    <script type="text/javascript" src="jquery_1.9.1.min.js"></script>
+    <script type="text/javascript" src="kendo.all.min.js"></script>
+    <script type="text/javascript" src="JSBridge.js"></script>
+    <script type="text/javascript">
+        /*
+  Description :  Based on the user actions it will show or hide tabs in present survey
+  Parameters 
+  --------------
+  _isShow : It is a boolean variable which is used to make decision whether to hide or show tab.
+                Value                       Action
+                _isShow = true              show tab
+                _isShow = false             hide tab
+ _tabName : It is a string variable which will hold survey type information
+ Note : Survey taken through views 
+        1. Normal Html survey whose view name : "Take Survey"
+        2. Survey taken through image form view name : " Image Survey"
+  */
+          function HideorShowTab(_isShow, _tabName) {
+            MobileCRM.UI.EntityForm.requestObject
+				(function (entityForm) {
+				    if (entityForm === undefined)
+				        throw new MobileCrmException("Exception was thrown :\n \nentityForm undefined.");
+
+				    // FIRST OPTION
+				    for (var i in entityForm.controllers) {
+
+				        if (entityForm.controllers[i].view !== undefined)
+				            var view = entityForm.controllers[i].view;
+				        else
+				            continue;
+				        if (view.name === _tabName) {
+				            view.isVisible = _isShow;
+				            return;
+				        }
+
+				    }
+				    var assocViews = entityForm.associatedViews;
+				    for (var i in assocViews) {
+				        if (assocViews[i].listView !== undefined && assocViews[i].llistView.name === _tabName) {
+				            var view = assocViews[i].listView.isVisible = _isShow;
+				            return;
+				        }
+				        else
+				            continue;
+
+				    }
+				    var detailViews = entityForm.detailViews;
+				    for (var i in detailViews) {
+				        if (detailViews[i] !== undefined && detailViews[i].name === _tabName) {
+				            var view = detailViews[i].isVisible = _isShow;
+				            return;
+				        }
+				        else
+				            continue;
+				    }
+
+
+				}, MobileCRM.bridge.alert, null
+				);
+
+        }
+
+
+
+
+
+        var Responseguid = null;
+        var selectedFrame = null;
+        var frameId = null; var AppVersion = null;
+        var sourceEntityName = null, sourceEntityId = null; var CSTabObject = null; var selectedFrame = null;
+        // When selected frame is changes, all related images will be loaded.
+        function product_OnChange(framesData) {
+            $('#Clear').trigger('click');
+            $("#t1").css('background-image', 'none');
+            $("#t1").empty();
+            $("#divadi").empty();
+            var RecordId = framesData.id;
+            frameId = RecordId;
+            var RecordName = framesData.primaryName;
+            var EntityName = framesData.entityName;
+            changedProduct = new Array();
+            changedProduct[0] = new Object();
+            changedProduct[0].id = RecordId;
+            changedProduct[0].name = RecordName;
+            changedProduct[0].entityType = EntityName;
+            var selectedsas = null;
+            retrieveImages(RecordId);
+        }
+        //Set the background image
+        function SetBackground(RecordId) {
+
+            retrieveFrameImages(RecordId);
+
+        }
+        var _showBorder = "true";
+        // Creates a new table to build image survey form
+        function createTable(selectedFrme) {
+            var mytable = $('#t1');
+            var _tableHeignt = parseInt($(mytable).css("height"));
+            var _tablewidth = parseInt($(mytable).css("width"));
+            var containerType = selectedFrme[0].properties["ebecssvy_containertype"];
+            if (selectedFrme[0].properties["ebecssvy_designerxml"] != undefined && selectedFrme[0].properties["ebecssvy_designerxml"] != null)
+                var designedData = $.parseXML(selectedFrme[0].properties["ebecssvy_designerxml"])
+            var xml = designedData;
+
+            if (xml != undefined && xml != null) {
+                var trsAre = $(xml).find('tr');
+                if ($(xml).find("showdesigner").length > 0 && $(xml).find("showdesigner")[0].textContent != null)
+                    _showBorder = $(xml).find("showdesigner")[0].textContent;
+                else if ($(xml).find("showdesigner").length > 0 && $(xml).find("showdesigner")[0].text != null)
+                    _showBorder = $(xml).find("showdesigner")[0].text;
+                if (trsAre.length > 0) {
+                    var divsCount = 0;
+                    for (var t = 0; t < trsAre.length; t++) {
+                        var height = parseFloat($($(xml).find('tr')[t]).find('row')[0].textContent);
+                        height = _tableHeignt * (height / 100);
+                        var row = $('<tr id="row' + t + '" style="height:' + height + 'px" ></tr>').appendTo(mytable); //class="class1 class2 class3"
+
+                        var tdsAre = $($($(xml).find('tr')[t]).find('tds')[0]).find('td');
+                        for (var td = 0; td < tdsAre.length; td++) {
+                            divsCount++;
+                            var rowSpan = colSpan = width = shape = "";
+                            if ($($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('rowspan')[0].textContent != undefined && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('rowspan')[0].textContent != null)
+                                rowSpan = $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('rowspan')[0].textContent;
+                            else if ($($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('rowspan')[0].text != undefined && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('rowspan')[0].text != null)
+                                rowSpan = $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('rowspan')[0].text;
+                            if ($($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('colspan')[0].textContent != undefined && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('colspan')[0].textContent != null)
+                                colSpan = $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('colspan')[0].textContent;
+                            else if ($($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('colspan')[0].text != undefined && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('colspan')[0].text != null)
+                                colSpan = $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('colspan')[0].text;
+
+                            var id = $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('id')[0].textContent;
+                            if ($($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('width')[0].textContent != undefined && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('width')[0].textContent != null)
+                                width = $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('width')[0].textContent;
+                            else if ($($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('width')[0].text != undefined && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('width')[0].text != null)
+                                width = $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('width')[0].text;
+                            if ($($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('shape')[0].textContent != undefined && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('shape')[0].textContent != null)
+                                shape = $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('shape')[0].textContent;
+                            else if ($($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('shape')[0].text != undefined && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('shape')[0].text != null)
+                                shape = $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('shape')[0].text;
+                            var idare = td.toString() + t.toString();
+                            width = _tablewidth * (width / 100);
+
+                            var notSelected = "false";
+                            if ($($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('notselected')[0] != null && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('notselected')[0].textContent != undefined && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('notselected')[0].textContent != null)
+                                notSelected = $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('notselected')[0].textContent;
+                            else if ($($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('notselected')[0] != null && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('notselected')[0].text != undefined && $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('notselected')[0].text != null)
+                                notSelected = $($($($(xml).find('tr')[t]).find('tds')[0]).find('td')[td]).find('notselected')[0].text;
+
+                            if (containerType != null && containerType == 213020000) {
+                                if (shape == "true") {
+                                    $('<td id="colTd' + idare + '"  style="width:' + width + 'px;" rowSpan=' + rowSpan + ' colSpan=' + colSpan + '> <div id="drop' + divsCount + '" class="circelDrop border" notSelected="' + notSelected + '"></div></td>').appendTo(row);
+                                }
+                                else {
+                                    $('<td id="colTd' + idare + '"  style="width:' + width + 'px;" rowSpan=' + rowSpan + ' colSpan=' + colSpan + '> </td>').appendTo(row);
+                                }
+                            }
+                            else if (containerType != null && containerType == 213020001) {
+                                if (shape == "true") {
+                                    $('<td id="colTd' + idare + '" style="width:' + width + 'px;" rowSpan=' + rowSpan + '; colSpan=' + colSpan + ';>  <div id="drop' + divsCount + '" class="sqaureDrop border" notSelected="' + notSelected + '"></div></td>').appendTo(row);
+                                }
+                                else {
+
+                                    $('<td id="colTd' + idare + '"  style="width:' + width + 'px; "rowSpan=' + rowSpan + '; colSpan=' + colSpan + ';>  </td>').appendTo(row);
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            //if (AppVersion != null && parseFloat(AppVersion) < 8)
+            appendDivHeight();
+            if (_showBorder == "false") {
+                $("div").removeClass("border");
+            }
+
+            $(".circelDrop").kendoDropTarget({ drop: dropIMG });
+            $(".sqaureDrop").kendoDropTarget({ drop: dropIMG });
+            if (totalImages != undefined && totalImages > 0) {
+                setTimeout(function () {
+                    var width = totalImages * parseInt(50);
+                    $("#divadi").width(parseInt(width)).height(60);
+                }, 300);
+            }
+        }
+        // Design settings 
+        function appendDivHeight() {
+
+            var trsData = $("#t1 > tbody  > tr");
+            var tdsArray = [];
+            $.each(trsData, function () {
+                var tdsData = $(this).find("td");
+                $.each(tdsData, function () {
+                    var tdsObject = new Object();
+                    tdsObject.td = this;
+                    tdsObject.height = $(this).css("height");
+                    tdsArray.push(tdsObject);
+                });
+            });
+            if (tdsArray.length > 0) {
+                $.each(tdsArray, function () {
+                    var _divs = $(this.td).find("div");
+                    var _dynmicsHeight = this.height;
+                    _dynmicsHeight = _dynmicsHeight.replace("px", "");
+                    $.each(_divs, function () {
+                        $(this).css("height", _dynmicsHeight + "px");
+                    });
+                });
+            }
+
+        }
+        // Retrieve images which are associated to selected frames.
+        function retrieveImages(id) {
+            // alert("retrieveImages");
+            var selectedsas = null;
+            var xml = "<fetch resultformat='DynamicEntities' version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
+           "<entity name='ebecssvy_images'>" +
+             "<attribute name='ebecssvy_imagesid' />" +
+             "<attribute name='ebecssvy_name' />" +
+             "<attribute name='ebecssvy_isglobalimage' />" +
+             "<attribute name='ebecssvy_imagereference' />" +
+            "<attribute name='entityimage' />" +
+             "<order attribute='ebecssvy_name' descending='false' />" +
+             "<filter type='or'>" +
+               "<condition attribute='ebecssvy_frame' operator='eq'  uitype='ebecssvy_frames' value='" + id + "' />" +
+                    "<condition attribute='ebecssvy_isglobalimage'  operator='eq' value='1'  />" +
+             "</filter>" +
+           "</entity>" +
+         "</fetch>";
+
+            MobileCRM.FetchXml.Fetch.executeFromXML(xml, function (data) { ImagesSucessCallBack(data) }, function (error) { ImagesErrorCallBack(error) }, null);
+
+        }
+        //Attaching image . Here image is stored in base 64 format.
+        function attachImage(imageId, imageRef) {
+            MobileCRM.DynamicEntity.loadDocumentBody("ebecssvy_images", imageId, function (data) {
+
+                var imgElement = "data:image/jpeg;base64," + data;
+               
+                $("<img style='width:50px; height:50px; float:left;' id='mobile" + imageId + "' imageReference='" + imageRef + "' class='dragItem' src='" + imgElement + "' alt='img'/>'&nbsp' '&nbsp'").appendTo("#divadi");
+                $("#mobile" + imageId).kendoDraggable({
+                    hint: function (element) {
+                        return element.clone();
+                    }
+                });
+            });
+        }
+        var totalImages = 0;
+        // Attaching images with are associated to selected on survey form
+        function ImagesSucessCallBack(data) {
+            var ClientUrl = "https://ebecssurvey.crm4.dynamics.com";
+            var selectedS = data;
+            selectedFrame = selectedS;
+            $("#divadi").html("");
+            if (selectedS.length > 0) {
+                $("#divadi").html("");
+                for (var i = 0; i < selectedS.length; i++) {
+                    var imageId = selectedS[i].id; //ebecssvy_imagereference_c
+                    var imageRef = selectedS[i].properties["ebecssvy_imagereference"];
+                    attachImage(imageId,imageRef);
+
+                }
+
+
+                SetBackground(frameId);
+                totalImages = selectedS.length;
+            }
+            else {
+                totalImages = 0;
+                $("#divadi").html(""); //No need
+                $("#" + tableId).css('background-image', 'none');
+            }
+        }
+        function ImagesErrorCallBack(error) {
+            if (typeof alert != "undefined") {
+                alert("Images Error : " + error);
+            }
+        }
+        //retrieve Frame images
+        function retrieveFrameImages(id) {
+          
+                var xml = "<fetch resultformat='DynamicEntities' version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
+      "<entity name='ebecssvy_frames'>" +
+        "<attribute name='ebecssvy_framesid' />" +
+        "<attribute name='ebecssvy_name' />" +
+      "<attribute name='ebecssvy_rows' />" +
+                            "<attribute name='ebecssvy_designerxml' />" +
+                            "<attribute name='ebecssvy_containertype' />" +
+                            "<attribute name='ebecssvy_columns' />" +
+                          //  "<attribute name='entityimage_url' />" +
+                //   "<attribute name='entityimage_url' />" +
+        "<order attribute='ebecssvy_name' descending='false' />" +
+        "<filter type='and'>" +
+          "<condition attribute='ebecssvy_framesid' operator='eq' uitype='ebecssvy_frames' value='" + id + "' />" +
+        "</filter>" +
+      "</entity>" +
+    "</fetch>";
+                MobileCRM.FetchXml.Fetch.executeFromXML(xml, function (data) { framesSuccessCallBack(data) }, function (error) { framesErrorCallBack(error) }, null);
+                MobileCRM.DynamicEntity.loadDocumentBody("ebecssvy_frames", id, function (data) {
+                    var imgElement = "data:image/jpeg;base64," + data;
+
+                    $("#" + tableId).css('background-image', 'none');
+                    $("#" + tableId).css("background-image", "url('" + imgElement + "')");
+                });
+            
+
+        }
+        //Adjusting co-ordinates of the frame 
+        function framesSuccessCallBack(data) {
+
+            selectedFrame = data;
+            createTable(data);
+            $("#" + tableId).attr("frameId", "mobile" + data[0].id);
+            var width = selectedFrame.length * parseInt(150);
+            $("#divadi").width(parseInt(width)).height(140);
+
+        }
+        function framesErrorCallBack(error) {
+            if (typeof alert != "undefined") {
+                alert("frames Error : " + error);
+            }
+        }
+        //Not in use
+        function cancel(e) {
+
+            if (e.preventDefault) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            return false;
+        }
+        var IsFrameDesigned = false;
+        // Used to drop image on selected portion of frame by mouse event
+        function dropIMG(ev) {
+            var actulaDropedDiv = $('#' + ev.dropTarget[0].id);
+            if ($(actulaDropedDiv).attr("notselected") == "true") {
+                ev.preventDefault();
+            }
+            else {
+                var new_img = $('#' + ev.target.id).clone();
+                var imgData = $(new_img)[0].src;
+                var imgId = $(new_img).attr("id");
+                var imgRef = $(new_img).attr("imagereference");
+                actulaDropedDiv.attr("imgId", imgId);
+                actulaDropedDiv.attr("imagereference", imgRef);
+                actulaDropedDiv.css("background-image", "url(" + imgData + ")");
+                actulaDropedDiv.css("background-size", "100% 100%");
+                actulaDropedDiv.css("background-repeat", "no-repeat");
+                IsFrameDesigned = true;
+            }
+        }
+        //Fires on body onload which will create response
+        function BodyLoad() {
+            IsFrameDesigned = false;
+            $("#SaveXml").click(function () {
+                CreateResponse();
+            });
+            $("#Clear").click(function () {
+                IsFrameDesigned = false;
+                $("#t1").empty("");
+                $("#" + tableId).css('background-image', 'none');
+                $(".dropItem").empty("");
+                $("#divadi").empty("");
+            });
+            $('#Clear').trigger('click');
+        }
+        //Fires on body onload which will create response
+        function OnLoad() {
+            IsFrameDesigned = false;
+            //alert(MobileCRM.UI.EntityForm.prototype.setTabVisibility);
+            tableId = "t1";
+            MobileCRM.UI.EntityForm.requestObject(function (entityForm) {
+                sourceEntityName = entityForm.entity.entityName;
+                sourceEntityId = entityForm.entity.id;
+                //Responseguid = entityForm.entity.properties.ebecssvy_responseguid;
+                CSTabObject = new Object();
+
+                var CSTabData = entityForm.entity.properties.ebecssvy_responseguid;
+                if (CSTabData.length > 0) {
+                    var dataArray = CSTabData.split('@');
+                    for (var i in dataArray) {
+                        if (i == 0)
+                            CSTabObject.CSId = dataArray[i];
+                        else if (i == 1)
+                            CSTabObject.CSName = dataArray[i];
+                        else if (i == 2)
+                            CSTabObject.TabId = dataArray[i];
+                        else if (i == 3)
+                            CSTabObject.TabName = dataArray[i];
+                    }
+
+                }
+                var lookupForm = new MobileCRM.UI.LookupForm()
+                lookupForm.allowedViews = null; // Allow all views
+                lookupForm.allowNull = true; // Allow choosing empty value
+                lookupForm.entities = ["ebecssvy_frames"]; // Allow only accounts
+                lookupForm.show(onLookupFinished, MobileCRM.bridge.alert, null);
+            }, function (err) {
+                alert('An error occurred: ' + err);
+            }, null);
+            $(".dropItem").kendoDropTarget({ drop: dropIMG });
+            $(".circle").kendoDropTarget({ drop: dropIMG });
+            $(".triangle").kendoDropTarget({ drop: dropIMG });
+
+            $("#" + $(drpEle).attr('id')).bind("contextmenu", function (event) {
+                event.preventDefault();
+                $("<div class='custom-menu' name='" + this.id + "' onclick='removeDiv(event)'>X</div>").appendTo("body").css({ top: event.pageY + "px", left: (event.pageX + 10) + "px" });
+            });
+            function removeDiv(event, parentid) {
+                var divId = $(event.srcElement).attr('name');
+                $("#" + divId).remove();
+                $("div.custom-menu").remove();
+            } //         
+            //Retrieve responseId from contact
+
+            if (sourceEntityId != null) {
+
+            }
+            // Not in use
+            function retrieveresponseId1(id) {
+                //alert("retrieveresponseId : enterd");
+                if (id != null && id != undefined && id != "")
+                    {
+                    var ResId = null;
+                var xml = "<fetch  resultformat='DynamicEntities' version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
+  "<entity name='contact'>" +
+    "<attribute name='fullname' />" +
+    "<attribute name='telephone1' />" +
+    "<attribute name='contactid' />" +
+    "<attribute name='new_responseid' />" +
+    "<order attribute='fullname' descending='false' />" +
+    "<filter type='and'>" +
+      "<condition attribute='contactid' operator='eq' uitype='contact' value='" + id + "' />" +
+    "</filter>" +
+  "</entity>" +
+"</fetch>";
+                MobileCRM.FetchXml.Fetch.executeFromXML(xml, function (data) {
+                    var ResId = data[0].properties["new_responseid"];
+                    alert("resp id from contcat" + ResId);
+
+
+                }, function (error) { framesErrorCallBack(error) }, null);
+            }
+            }
+        }
+        // Response information id is being stored 
+        function frameSuccessCallBack(data) {
+
+            var _FrameName = data[0].properties["new_responseid"];
+        }
+        // Creating response and storing whole survey html form information in xml for relading again while user opens next time
+        function CreateResponse() {
+            var frameRef = null;
+            if (changedProduct[0].id != null && changedProduct[0].id != undefined && changedProduct[0].id != "") {
+                var fetchXml = "<fetch resultformat='DynamicEntities' version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
+          "<entity name='ebecssvy_frames'>" +
+            "<attribute name='ebecssvy_framesid' />" +
+             "<attribute name='ebecssvy_framereference' />" +
+            "<filter type='and'>" +
+              "<condition attribute='ebecssvy_framesid' operator='eq' uitype='ebecssvy_frames' value='" + changedProduct[0].id + "' />" +
+            "</filter>" +
+          "</entity>" +
+        "</fetch>";
+                MobileCRM.FetchXml.Fetch.executeFromXML(fetchXml, function (data) {
+                    if (data != null && data.length > 0) {
+                        frameRef = data[0].properties["ebecssvy_framereference"];
+                    }
+                }, function (error) {
+                    alert('Frame Retrieval Error : ' + error);
+                    removePanels();
+                }, null);
+
+            }
+       
+           
+              MobileCRM.bridge.enableDebug();
+             debugger;
+            showLoadingMessage_Process();
+            var Content = null;
+            if (($("#imageContent")[0].innerHTML != undefined) && ($("#imageContent")[0].innerHTML != null)) {
+                Content = $("#imageContent")[0].innerHTML;
+
+            }
+            setTimeout(
+function () {
+    if (IsFrameDesigned) {
+        var containerType = selectedFrame[0].properties["ebecssvy_containertype"];
+        if (selectedFrame[0].properties["ebecssvy_designerxml"] != undefined && selectedFrame[0].properties["ebecssvy_designerxml"] != null)
+            var designedData = $.parseXML(selectedFrame[0].properties["ebecssvy_designerxml"])
+        var xml = designedData;
+        if (xml != undefined && xml != null) {
+
+            var xmlTable = $("<table>");
+            $("<tableimage>" + $('#t1').attr("frameId") + "</tableimage>").appendTo(xmlTable);
+
+            /*********************************************************************************************/
+            $("<framereference>" + frameRef + "</framereference>").appendTo(xmlTable);
+            /**************************************************************************/
+
+
+            if ($('#t1 tr').length > 0) {
+                for (var k = 0; k < $('#t1 tr').length; k++) {
+                    if ($($(xml).find('tr')[k]).find('row')[0].textContent != undefined)
+                        var height = parseFloat($($(xml).find('tr')[k]).find('row')[0].textContent);
+                    else
+                        var height = parseFloat($($(xml).find('tr')[k]).find('row')[0].text);
+
+                    var tr = $("<Tr></Tr>").appendTo(xmlTable);
+                    $("<height>" + height + "</height>").appendTo(tr);
+
+                    if ($($("#t1 tr")[k]).find('td').length > 0) {
+                        var tds = $($("#t1 tr")[k]).find("td");
+                        var tdsAre = $("<Tds></Tds>").appendTo(tr);
+                        for (var j = 0; j < tds.length; j++) {
+                            var inTd = $("<td/>");
+                            var cellname = "";
+                            var rowSpan = colSpan = width = shape = "";
+                            if ($($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('rowspan')[0].textContent != undefined && $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('rowspan')[0].textContent != null)
+                                rowSpan = $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('rowspan')[0].textContent;
+                            else if ($($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('rowspan')[0].text != undefined && $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('rowspan')[0].text != null)
+                                rowSpan = $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('rowspan')[0].text;
+                            if ($($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('colspan')[0].textContent != undefined && $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('colspan')[0].textContent != null)
+                                colSpan = $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('colspan')[0].textContent;
+                            else if ($($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('colspan')[0].text != undefined && $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('colspan')[0].text != null)
+                                colSpan = $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('colspan')[0].text;
+
+                            if ($($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('width')[0].textContent != undefined && $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('width')[0].textContent != null)
+                                width = $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('width')[0].textContent;
+                            else if ($($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('width')[0].text != undefined && $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('width')[0].text != null)
+                                width = $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('width')[0].text;
+
+                            if ($($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('cellname').length > 0 && $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('cellname')[0].textContent != undefined && $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('cellname')[0].textContent != null)
+                                cellname = $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('cellname')[0].textContent;
+                            else if ($($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('cellname').length > 0 && ($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('cellname')[0].text != undefined && $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('cellname')[0].text != null)
+                                width = $($($($(xml).find('tr')[k]).find('tds')[0]).find('td')[j]).find('cellname')[0].text;
+                            $("<cellname>" + cellname + "</cellname>").appendTo(inTd);
+                            $("<colspan>" + colSpan + "</colspan>").appendTo(inTd);
+                            $("<rowspan>" + rowSpan + "</rowspan>").appendTo(inTd);
+                            if ($(tds[j]).find('div').length > 0) {
+                                $("<shape>true</shape>").appendTo(inTd);
+
+                                var imgRef = "";
+
+                                if ($($($(tds)[j]).find('div')[0]).attr('imgId') != null && $($($(tds)[j]).find('div')[0]).attr('imgId').length > 0) {
+                                    var _imgId = $($($(tds)[j]).find('div')[0]).attr('imgId');
+
+                                    $("<divimage>" + _imgId + "</divimage>").appendTo(inTd);
+
+                                }
+                                if ($($($(tds)[j]).find('div')[0]).attr('imagereference') != null && $($($(tds)[j]).find('div')[0]).attr('imagereference').length > 0) {
+                                    imgRef = $($($(tds)[j]).find('div')[0]).attr('imagereference');
+                                    $("<imagereference>" + imgRef + "</imagereference>").appendTo(inTd);
+                                }
+
+                            }
+                            //else
+                            //    $("<shape>flase</shape>").appendTo(inTd);
+                            //$("<id>" + tds[j].id + "</id>").appendTo(inTd);
+                            //$("<checkid>" + $(tds[j]).find('input')[0].value + "</checkid>").appendTo(inTd);
+                            if ($(tds[j]).find('div').length > 0) {
+                                $("<shape>true</shape>").appendTo(inTd);
+                                $("<divclassname>" + $($($('#t1').find('tr')[k]).find('td')[j]).find('div')[0].className + "</divclassname>").appendTo(inTd);
+                            }
+                            else {
+                                $("<shape>flase</shape>").appendTo(inTd);
+                                $("<divclassname>" + $($($('#t1').find('tr')[k]).find('td')[j]).find('div')[0].className + "</divclassname>").appendTo(inTd);
+                            }
+                            $("<width>" + width + "</width>").appendTo(inTd);
+                            $(inTd).appendTo(tdsAre);
+                            if (j == tds.length - 1)
+                                $(tdsAre).appendTo(tr);
+                        }
+                    }
+                }
+            }
+            $("<ShowDesigner>" + _showBorder + "</ShowDesigner>").appendTo(xmlTable);
+        }
+
+
+        if ($(xmlTable) != undefined && $(xmlTable) != null && $(xmlTable)[0].outerHTML != undefined && $(xmlTable)[0].outerHTML != null) {
+            var xmlResponse = $(xmlTable)[0].outerHTML;
+            checkDR(xmlResponse);
+        }
+    }
+
+
+    else {
+        removePanels();
+        alert("Please select the frames and design the frame");
+    }
+
+}, 5000);
+
+
+            
+        }
+        // Designer response is being updated when survey is modified otherwise new response will be created
+        function checkDR(xmlResponse) {
+
+            if (CSTabObject != null) {
+
+
+                var TabLookUp = CSTabObject.TabId;
+                var CSLookUp = CSTabObject.CSId;
+
+
+                var DRFetch = "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false' resultformat='DynamicEntities'>" +
+  "<entity name='ebecssvy_desinerresponse'>" +
+    "<attribute name='ebecssvy_desinerresponseid' />" +
+    "<attribute name='ebecssvy_name' />" +
+    "<attribute name='createdon' />" +
+    "<order attribute='ebecssvy_name' descending='false' />" +
+    "<filter type='and'>" +
+      "<condition attribute='ebecssvy_surveytab' operator='eq' uitype='ebecssvy_tabs' value='" + TabLookUp + "' />" +
+      "<condition attribute='ebecssvy_conductedsurvey' operator='eq' uitype='ebecssvy_conductedsurvey' value='" + CSLookUp + "' />" +
+    "</filter>" +
+  "</entity>" +
+"</fetch>";
+
+                MobileCRM.FetchXml.Fetch.executeFromXML(DRFetch,
+            function (data) {
+                if (data != null && data.length > 0) {
+                    UpdateResponse(data[0].properties["ebecssvy_desinerresponseid"], xmlResponse);
+                }
+                else {
+
+                    var _responseRec = MobileCRM.DynamicEntity.createNew("ebecssvy_desinerresponse");
+                    var props = _responseRec.properties;
+                    props.ebecssvy_xmlresponse = xmlResponse;
+                    if (CSTabObject != null) {
+
+                        props.ebecssvy_name = CSTabObject.TabName + " - " + CSTabObject.CSName;
+                        var TabLookUp = new MobileCRM.Reference("ebecssvy_tabs", CSTabObject.TabId);
+                        var CSLookUp = new MobileCRM.Reference("ebecssvy_conductedsurvey", CSTabObject.CSId);
+                        props.ebecssvy_surveytab = TabLookUp;
+                        props.ebecssvy_conductedsurvey = CSLookUp;
+                    }
+                    _responseRec.save(
+                    		function (error) {
+                    		    if (error) {
+                    		        alert("An error occurred: " + error);
+                    		        removePanels();
+                    		    }
+                    		    else {
+                    		        // callback is called in scope of newly created MobileCRM.DynamicEntity object; thus we can access the data using "this" keyword
+                    		        var newId = this.id;
+                    		        var allProps = this.properties;
+                    		        HideorShowTab(false, "Image Survey");
+                    		        $('#Clear').trigger('click');
+                    		        removePanels();
+                    		        MobileCRM.UI.EntityForm.prototype.selectTab("Take Survey", function (data) {
+
+                    		        }, null);
+
+                    		    }
+                    		}
+                    	);
+                }
+            }, function (error) {
+                if (typeof alert != "undefined") {
+                    alert("checkDR Error : " + error);
+                }
+            }, null);
+            }
+
+
+        }
+        // Updating designer response
+        function UpdateResponse(DSId, xmlResponse) {
+
+            var _RespRec = new MobileCRM.DynamicEntity("ebecssvy_desinerresponse", DSId);
+            var props = _RespRec.properties;
+            props.ebecssvy_xmlresponse = xmlResponse;
+            _RespRec.save(
+        function (error) {
+            if (error) {
+                alert("An error occurred: " + error);
+                removePanels();
+            }
+            else {
+                var newId = this.id;
+                var allProps = this.properties;
+                //alert("Updated Response ID :: " + newId);
+                HideorShowTab(false, "Image Survey");
+                $('#Clear').trigger('click');
+                removePanels();
+                if (AppVersion != null && parseFloat(AppVersion) < 8) {
+                    alert("Tap on Take Survey");
+                }
+                else {
+                    MobileCRM.UI.EntityForm.prototype.selectTab("Take Survey", function (data) {
+
+                    }, null);
+                }
+            }
+        });
+
+        }
+        //Storing application version
+        function GetFrames() {
+            //$("#containerSelect").hide();
+            MobileCRM.Configuration.requestObject(
+                function (config) {
+                    AppVersion = config.applicationVersion;
+                },
+		        function (err) {
+		            alert('An error occurred: ' + err);
+		        },
+		        null
+	        );
+            OnLoad();
+
+        }
+
+        function onLookupFinished(frameRef) {
+            product_OnChange(frameRef)
+        }
+        var tableId = null;
+        function showContainer() {
+            var selectedContainerValue = $("#containersNumber option:selected").val();
+            if (selectedContainerValue == "4") {
+                tableId = "t1";
+                $("#t1").show();
+            }
+            if (selectedContainerValue == "5") {
+                tableId = "t5";
+                $("#t1").show();
+            }
+            $("#frameBtn").prop("disabled", false);
+        }
+
+       
+        // Displays loading panel
+        function showLoadingMessage_Process() {
+            var loadingPanel = "<div id='divLoadingPanel' style='background-color:#F2F2F2; opacity:0.4; filter: alpha(opacity=70); width: 100%; height: 100%; text-align: center; display: block; position: fixed; top:0px; z-index:9999;'>" +
+                               "</div><div id='loadingImg' style='position:absolute; top:47%; left:45%; z-index:9999; width: auto; text-align: center; padding: 0px;' ><img src='progress.gif' position='absolute' top:'0' bottom='0' margin='auto'>" + //background: #fff
+                               "<br /><label id='errorPostingLoadingPanelText' Text='Error in Processing...' style='font-size:16px; font-weight: bold; font-size: 16px; padding: 15px;'>Processing...</label></div>";
+
+            $(loadingPanel).prependTo("body");
+        }
+        // Removes attaced loading panels
+        function removePanels() {
+            if ($('#divLoadingPanel').length > 0)
+                $('#divLoadingPanel').remove();
+            if ($('#loadingImg').length > 0)
+                $('#loadingImg').remove();
+        }
+    </script>
+</head>
+<body onload="BodyLoad()">
+    <center>
+        <!--<p>Choose Any Frame!</p>-->
+        &nbsp
+        <div id="bankaccountlookupdiv">
+            <table>
+                <tr>
+                    <td>
+                        <label style="font-weight: bold;">
+                            Choose Any Frame!</label>
+                    </td>
+                    <td>
+                        <input id="frameBtn" type="button" value="Get Frames" onclick="GetFrames()" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <br />
+        <div id="imageContent">
+            <table id="t1" style="border: 1px solid #aaaaaa; background-size: 100% 100%;background-repeat: no-repeat;" cellpadding="0" cellspacing="0">
+            </table>
+        </div>
+        <br />
+        <b>Frame corresponding images are :
+            <br />
+        </b>
+        <br />
+        <div id="divadi1" style="border: 1px solid #ccc; padding: 10px;overflow: auto;">
+            <div id="divadi">
+            </div>
+        </div>
+        <br />
+        <input type="button" id="SaveXml" value="Save" onclick="return SaveXml_onclick()" />&nbsp;&nbsp;&nbsp;
+        <input type="button" id="Clear" value="Clear" />&nbsp;&nbsp;&nbsp; <span id="span1">
+        </span>
+    </center>
+</body>
+</html>

@@ -1,0 +1,2640 @@
+﻿<!-- Scheduled survey html will be loaded by clicking on perform survey button which is available in conducted survey html -->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <!--<meta name="viewport" content="width=device-width">-->
+    <!-- Defined iOS viewport -->
+    <!-- If missing, the UIWebView control on iOS zooms out the web page and allows the pinch zoom. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <style type="text/css">
+        .required:after {
+            content: " *";
+            color: red;
+            font-size: 20px;
+        }
+
+        .GoToQuestionStyle {
+            background-color: #57C4FA;
+        }
+
+        .RedColor {
+            background-color: Red;
+        }
+
+        body {
+            font-family: Segoe UI, Arial, sans-serif;
+            font-size: 80%;
+            color: #000;
+            overflow: hidden;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .contactheader {
+            width: 100%;
+            float: left;
+            margin: 10px;
+            font-weight: normal;
+            margin-bottom: 0px;
+            font-size: 19px;
+            color: #444;
+        }
+
+        .header {
+            width: 100%;
+            border-bottom: 1px solid #b6babf;
+            padding-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .body_content {
+            width: 100%;
+            font-family: Segoe UI, Arial, sans-serif;
+            position: absolute;
+            top: 77px;
+            bottom: 70px;
+            right: 0;
+            left: 0;
+            overflow: auto;
+        }
+
+        .footer {
+            width: 100%;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            clear: both; /*height: 20px;*/
+            background-color: #e9edf1;
+            border-top: 1px solid #ccc;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .Question {
+            /*width: 90%;*/
+        }
+
+        .Qusdiv {
+            height: 150px;
+            margin-top: 60px;
+            position: absolute;
+            left: 0;
+            right: 0; /*background-color: #e9edf1;*/
+        }
+
+        .Ansdiv {
+            height: 150px;
+            border-top: 1px solid #ccc;
+            position: absolute;
+            top: 230px;
+            left: 0;
+            right: 0; /*background-color: #e9edf1;*/
+        }
+
+        .disabled {
+            color: darkgrey;
+            background-color: grey;
+        }
+
+        input:not([type='radio']):not([type=checkbox]):not([type='text']), select, textarea {
+            width: 85% !important;
+        }
+
+        input[type=radio] {
+            width: 20px;
+            height: 20px;
+        }
+
+        input[type=checkbox] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .sizeClass {
+            position: relative;
+            top: -5px;
+        }
+
+        button {
+            width: 66px;
+            height: 24px;
+        }
+
+        .LookupImage {
+            margin-top: 3px;
+            height: 23px;
+            width: 23px;
+        }
+
+        @media screen and (max-width:480px) {
+            .LookupImage {
+                margin-top: 3px;
+                /*height: 24px;
+                  width: 24px;*/
+            }
+
+            input[type=radio] {
+                width: 17px;
+                height: 17px;
+            }
+
+            input[type=checkbox] {
+                width: 17px;
+                height: 17px;
+            }
+
+            .sizeClass {
+                position: relative;
+                top: -3px;
+            }
+        }
+
+        @media screen and (max-width:360px) {
+            .LookupImage {
+                margin-top: 2px;
+                /*height: 22px;
+                  width: 22px;*/
+            }
+
+            input[type=radio] {
+                width: 16px;
+                height: 16px;
+            }
+
+            input[type=checkbox] {
+                width: 16px;
+                height: 16px;
+            }
+
+            .sizeClass {
+                position: relative;
+                top: -3px;
+            }
+        }
+
+        .scorevalue{
+            text-align:center;
+        }
+    </style>
+    <style>
+        .dropdown-header {
+            border-width: 0 0 1px 0;
+            text-transform: uppercase;
+        }
+
+            .dropdown-header > span {
+                display: inline-block;
+                padding: 10px;
+            }
+
+                .dropdown-header > span:first-child {
+                    width: 50px;
+                }
+
+        .customers-list .k-item {
+            line-height: 7em;
+            min-width: 260px;
+            display: inline-block;
+        }
+        /* Material Theme padding adjustment*/
+        .k-material .customers-list .k-item, .k-material .customers-list .k-item.k-state-hover, .k-materialblack .customers-list .k-item, .k-materialblack .customers-list .k-item.k-state-hover {
+            padding-left: 5px;
+            border-left: 0;
+            overflow: hidden;
+        }
+
+        .customers-list .k-item > span {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: top;
+            margin: 20px 10px 10px 5px;
+            float: left;
+            width: 48%;
+        }
+
+            .customers-list .k-item > span:first-child {
+                -moz-box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+                -webkit-box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+                box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+                margin: 10px;
+                width: 100px;
+                height: 100px;
+                background-size: 100%;
+                background-repeat: no-repeat;
+            }
+
+        .customers-list h3 {
+            font-size: 1.2em;
+            font-weight: normal;
+            margin: 0 0 1px 0;
+            padding: 0;
+            float: left;
+            width: 100%;
+            text-align: left;
+            line-height: 22px;
+        }
+
+        .customers-list p {
+            margin: 0;
+            padding: 0;
+            font-size: .8em;
+        }
+
+        .k-popup .k-list .k-item, .k-fieldselector .k-list .k-item {
+            min-height: 2.14em;
+            line-height: 2.14em;
+            overflow: hidden;
+        }
+
+        .selected-value {
+            display: inline-block;
+            vertical-align: middle;
+            width: 24px;
+            height: 24px;
+            background-size: 100%;
+            margin-right: 5px;
+            border-radius: 70%;
+        }
+
+        .survey_tbl {
+            border: 1px solid #ccc;
+            width: 100% !important;
+        }
+
+            .survey_tbl th {
+                border-bottom: 1px solid #ccc;
+                border-right: 1px solid #ccc;
+                background-color: rgba(0,0,0,.3);
+                font-size: 13px;
+                font-weight: bold;
+                padding: 5px;
+                text-align: left;
+            }
+
+                .survey_tbl th:last-child {
+                    border-right: none;
+                }
+
+            .survey_tbl td {
+                border-top: 1px solid #ccc;
+                border-right: 1px solid #ccc;
+                font-size: 12px;
+                padding: 5px;
+            }
+
+        .text_overflow {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 300px;
+        }
+
+            .text_overflow a {
+                text-decoration: none;
+            }
+
+            .text_overflow a {
+                text-decoration: underline;
+            }
+    </style>
+    <link rel="stylesheet" href="kendo.common-material.min.css" />
+    <link rel="stylesheet" href="kendo.material.min.css" />
+    <script type="text/javascript" src="jquery_1.9.1.min.js"></script>
+    <script type="text/javascript" src="kendo.all.min.js"></script>
+    <script type="text/javascript" src="JSBridge.js"></script>
+    <script type="text/javascript">
+
+        var dynamicsData = null, SurvedEntObj = null; sourceEntityName = null, sourceEntityId = null;
+        var responsesRelatedToQuestion = null; var SurveyAnswersActionsArray = null; var Platform = null;
+        var IsOnload = true; var firstLoad = "true";
+        var isFinished = false;
+        var childSurveyCount = 0;
+
+        function writeError(text) {
+            var error = document.getElementById("temp");
+        }
+
+        var Result_Tabs = null; var Result_Ans = null; var AttributeType = null; var order = null; var j = 0; var _CurrentUserName = null; var _CurrentUserId = null;
+        var _CConductedSurveyId = null; var CCSurveyStatusChanged = false; var _CConductedSurveyName = null; var SurveyType = null;
+        var QuestionsArray = null; var IsPerfromAction = false; var requredQId = null; var notRequiredQId = null;
+        var tabIsShowDesigner = "false"; var _htmlUrl = null; var parentConductedSurvey = null;
+        var highlightQ = null; var noAnswersArray = null;
+        var lastSeenTabIndex = 0;
+        var SurveyTypeName = null;
+        var templateScoring = "false";
+        var surveyTemplate = null;
+        var tabQuestions = [];
+        var finalScore = 0;
+
+        /*
+        Description :  Based on the user actions it will show or hide tabs in present survey
+        Parameters
+        --------------
+        _isShow : It is a boolean variable which is used to make decision whether to hide or show tab.
+                      Value                       Action
+                      _isShow = true              show tab
+                      _isShow = false             hide tab
+       _tabName : It is a string variable which will hold survey type information
+       Note : Survey taken through views
+              1. Normal Html survey whose view name : "Take Survey"
+              2. Survey taken through image form view name : " Image Survey"
+        */
+        function HideorShowTab(_isShow, _tabName) {
+
+            MobileCRM.UI.EntityForm.requestObject
+				(function (entityForm) {
+				    if (entityForm === undefined)
+				        throw new MobileCrmException("Exception was thrown :\n \nentityForm undefined.");
+
+				    // FIRST OPTION
+				    for (var i in entityForm.controllers) {
+
+				        if (entityForm.controllers[i].view !== undefined)
+				            var view = entityForm.controllers[i].view;
+				        else
+				            continue;
+				        if (view.name === _tabName) {
+				            view.isVisible = _isShow;
+				            return;
+				        }
+
+				    }
+				    var assocViews = entityForm.associatedViews;
+				    for (var i in assocViews) {
+				        if (assocViews[i].listView !== undefined && assocViews[i].llistView.name === _tabName) {
+				            var view = assocViews[i].listView.isVisible = _isShow;
+				            return;
+				        }
+				        else
+				            continue;
+
+				    }
+				    var detailViews = entityForm.detailViews;
+				    for (var i in detailViews) {
+				        if (detailViews[i] !== undefined && detailViews[i].name === _tabName) {
+				            var view = detailViews[i].isVisible = _isShow;
+				            return;
+				        }
+				        else
+				            continue;
+				    }
+
+
+				}, MobileCRM.bridge.alert, null
+				);
+
+        }
+        var AppVersion = null;
+        /*
+        Description : As tab can work online as well as offline.So, we will validatte license information when user is in online mode.
+        License inforamtion is stored in ebecssvy_validatelicensing entity.
+        Retriving ebecssvy_validatelicensing entity records to know whether license is expired or not.
+        ebecssvy_isvalidatelicense = true    indicates license is not expired.
+        ebecssvy_isvalidatelicense = false    indicates license is expired.
+        */
+        function validateLicenseOnline() {
+            var _ebecsLicense = "<fetch version='1.0' resultformat='DynamicEntities' output-format='xml-platform' mapping='logical' distinct='false'>" +
+                                           "<entity name='ebecssvy_validatelicensing'>" +
+                                             "<attribute name='ebecssvy_validatelicensingid' />" +
+                                             "<attribute name='ebecssvy_isvalidatelicense' />" +
+                                             "<order attribute='ebecssvy_name' descending='false' />" +
+                                           "</entity>" +
+                                         "</fetch>";
+
+            MobileCRM.FetchXml.Fetch.executeFromXML(_ebecsLicense, function (data) {
+                if (data != null && data.length > 0) {
+                    MobileCRM.bridge.alert("Inside online license code");
+                    var _responseRec = new MobileCRM.DynamicEntity("ebecssvy_validatelicensing", data[0].id);
+                    var _isValidateLincense = "false";
+                    _isValidateLincense = data[0].properties["ebecssvy_isvalidatelicense"] != null ? data[0].properties["ebecssvy_isvalidatelicense"].toString() : "false";
+                    var props = _responseRec.properties;
+                    if (_isValidateLincense == "false")
+                        props.ebecssvy_isvalidatelicense = true;
+                    else
+                        props.ebecssvy_isvalidatelicense = false;
+                    _responseRec.save(
+		function (error) {
+		    if (error) {
+		        if (error.indexOf("License Key required for Survey Solution, Contact eBecs") != -1)
+		            MobileCRM.bridge.alert("License Key required for Survey Solution, Contact eBecs");
+		        else if (error.indexOf("OrganizationId Is Not Valid.") != -1)
+		            MobileCRM.bridge.alert("OrganizationId Is Not Valid.");
+		        else if (error.indexOf("License Expired, Kindly contact Publisher.") != -1)
+		            MobileCRM.bridge.alert("License Expired, Kindly contact Publisher.");
+		        else if (error.indexOf("Please submit License Key.") != -1)
+		            MobileCRM.bridge.alert("Please submit License Key.");
+		        else
+		            MobileCRM.bridge.alert("Please submit License Key.");
+		        MobileCRM.Bridge.prototype.closeForm();
+		        removePanels();
+		    }
+		    else {
+		        // callback is called in scope of newly created MobileCRM.DynamicEntity object; thus we can access the data using "this" keyword
+		        removePanels();
+		        executeFurther();
+		    }
+		}
+	);
+                }
+                else {
+                    var _responseRec = MobileCRM.DynamicEntity.createNew("ebecssvy_validatelicensing");
+                    _responseRec.save(
+		function (error) {
+		    if (error) {
+		        if (error.indexOf("License Key required for Survey Solution, Contact eBecs") != -1)
+		            MobileCRM.bridge.alert("License Key required for Survey Solution, Contact eBecs");
+		        else if (error.indexOf("OrganizationId Is Not Valid.") != -1)
+		            MobileCRM.bridge.alert("OrganizationId Is Not Valid.");
+		        else if (error.indexOf("License Expired, Kindly contact Publisher.") != -1)
+		            MobileCRM.bridge.alert("License Expired, Kindly contact Publisher.");
+		        else if (error.indexOf("Please submit License Key.") != -1)
+		            MobileCRM.bridge.alert("Please submit License Key.");
+		        else
+		            MobileCRM.bridge.alert("Please submit License Key.");
+		        MobileCRM.Bridge.prototype.closeForm();
+		        removePanels();
+		    }
+		    else {
+		        // callback is called in scope of newly created MobileCRM.DynamicEntity object; thus we can access the data using "this" keyword
+		        removePanels();
+		        executeFurther();
+		    }
+		}
+	);
+                }
+
+            }, function (error) {
+                MobileCRM.bridge.alert('An error occurred: ' + error);
+                MobileCRM.Bridge.prototype.closeForm();
+                removePanels();
+            }, null);
+        }
+        //Licnese validation while user in offline mode
+        function validateLicenseOffline() {
+            var _ebecsLicense = "<fetch version='1.0' resultformat='DynamicEntities' output-format='xml-platform' mapping='logical' distinct='false'>" +
+                                           "<entity name='ebecssvy_validatelicensing'>" +
+                                             "<attribute name='ebecssvy_validatelicensingid' />" +
+                                             "<attribute name='ebecssvy_isvalidatelicense' />" +
+                                             "<order attribute='ebecssvy_name' descending='false' />" +
+                                           "</entity>" +
+                                         "</fetch>";
+
+            MobileCRM.FetchXml.Fetch.executeFromXML(_ebecsLicense, function (data) {
+                if (data != null && data.length > 0) {
+                    MobileCRM.bridge.alert("Inside offline license code");
+                    removePanels();
+                    executeFurther();
+                }
+                else {
+                    MobileCRM.bridge.alert("Please submit License Key.");
+                    MobileCRM.Bridge.prototype.closeForm();
+                    removePanels();
+                }
+
+            }, function (error) {
+                MobileCRM.bridge.alert('An error occurred: ' + error);
+                MobileCRM.Bridge.prototype.closeForm();
+                removePanels();
+            }, null);
+        }
+        //Accessing current user information and application version
+        function executeFurther() {
+            //onSave();
+            MobileCRM.Configuration.requestObject(
+                function (config) {
+                    var settings = config.settings;
+                    _CurrentUserId = settings.systemUserId;
+                    GetUserName(_CurrentUserId);
+                    AppVersion = config.applicationVersion;
+                },
+		        function (err) {
+		            MobileCRM.bridge.alert('An error occurred: ' + err);
+		        },
+		        null
+	        );
+            responsesRelatedToQuestion = [];
+            $("#imgServey").css("display", "none");
+            getSelectedSurvey();
+
+            document.getElementById('nextid').disabled = true;
+        }
+
+        var isOnline = null;
+        //Can predict whether user is accessing through online mode or offline mode.
+        function OnLoad() {
+            //  MobileCRM.bridge.enableDebug();
+            // debugger;
+            Platform = MobileCRM.bridge.platform;
+            showLoadingMessage_Process("Fetching data");
+
+            MobileCRM.Configuration.requestObject(
+                function (config) {
+                    isOnline = config.isOnline;
+                    if (isOnline.toString() == "true")
+                        executeFurther(); // validateLicenseOnline();
+                    else
+                        executeFurther();   //validateLicenseOffline();
+                },
+                function (err) {
+                    MobileCRM.bridge.alert('An error occurred: ' + err);
+                    removePanels();
+                },
+                null
+            );
+
+
+
+        }
+        //Retrieves selected survey template
+        function getSurveyTemplate(templateId) {
+            var templateFetch = "<fetch resultformat='DynamicEntities' version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
+                                "<entity name='ebecssvy_survey'>" +
+                                  "<attribute name='ebecssvy_surveyid' />" +
+                                  "<attribute name='ebecssvy_name' />" +
+                                  "<attribute name='statuscode' />" +
+                                  "<attribute name='ebecssvy_showsignatureonsurvey' />" +
+                                  "<attribute name='ebecssvy_scoring' />" +
+                                  "<order attribute='ebecssvy_name' descending='false' />" +
+                                  "<filter type='and'>" +
+                                    "<condition attribute='ebecssvy_surveyid' operator='eq' uiname='External Timber Door Survey' uitype='ebecssvy_survey' value='" + templateId + "' />" +
+                                  "</filter>" +
+                                "</entity>" +
+                              "</fetch>";
+            MobileCRM.FetchXml.Fetch.executeFromXML(templateFetch, function (data) {
+                if (data != null && data.length > 0) {
+                    surveyTemplate = data[0];
+
+                    var IssignatureShow = data[0].properties["ebecssvy_showsignatureonsurvey"] != null ? data[0].properties["ebecssvy_showsignatureonsurvey"].toString() : "";
+                    templateScoring = data[0].properties["ebecssvy_scoring"] != null ? data[0].properties["ebecssvy_scoring"].toString() : "false";
+
+                    GetResponsesForCS();
+                    if (IssignatureShow != "" && IssignatureShow == "true")
+                        HideorShowTab(true, "Signature");
+                    else
+                        HideorShowTab(false, "Signature");
+                }
+            }, function (error) {
+                MobileCRM.bridge.alert('Template: An error occurred: ' + error);
+                removePanels();
+            }, null);
+        }
+
+        var statusChangeCaptured = 0;
+        /*
+        Description : Current conducted survey status code will be upated  and stores information of associated survey template
+        */
+        function getSelectedSurvey() {
+            MobileCRM.bridge.enableDebug();
+            var isNew = false;
+            MobileCRM.UI.EntityForm.requestObject(function (entityForm) {
+                var statusReason = entityForm.entity.properties["statuscode"];
+                statusChangeCaptured = statusReason;
+                //status update on onload
+                //statusReason == 213020003 - In Progress
+                //statusReason == 213020002 - Not Started
+                //statusReason == 213020000 - Scheduled
+                //statusReason == 213020001 - Completed
+                if (statusReason == 213020001) {//in pr NOT ST schedu
+
+                    lastSeenTabIndex = 0;
+                    _CConductedSurveyId = entityForm.entity.id;
+                    _CConductedSurveyName = entityForm.entity.primaryName;
+
+                    if (entityForm.entity.isNew)
+                        isNew = entityForm.entity.isNew;
+
+                    if (entityForm.entity.properties["ebecssvy_surveytemplateid"] != null) {
+                        _surveyName = entityForm.entity.properties["ebecssvy_surveytemplateid"].primaryName;
+                        SurveyId = entityForm.entity.properties["ebecssvy_surveytemplateid"].id;
+                        finalScore = entityForm.entity.properties["ebecssvy_finalscore"];
+                        document.getElementById("SurveyName").innerHTML = _surveyName;
+                        getSurveyTemplate(SurveyId);
+
+                    }
+
+                    else {
+                        if (!isNew)
+                            MobileCRM.bridge.alert("Survey Template is not selected on Conducted Survey\n Kindly select and take survey");
+                        HideorShowTab(false, "Take Survey");
+                        HideorShowTab(false, "Image Survey");
+                    }
+                }
+                else {
+                    if (AppVersion != null && parseFloat(AppVersion) < 8) {
+                        HideorShowTab(false, "Take Survey");
+                        HideorShowTab(false, "Image Survey");
+                    }
+                }
+            }, function (err) {
+                MobileCRM.bridge.alert('An error occurred: ' + err);
+                removePanels();
+            }, null);
+        }
+
+        // Retrieves and stores user name information
+        function GetUserName(_userId) {
+
+            var _userFetch = "<fetch resultformat='DynamicEntities' version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>" +
+                             "<entity name='systemuser'>" +
+                               "<attribute name='fullname' />" +
+                               "<order attribute='fullname' descending='false' />" +
+                               "<filter type='and'>" +
+                                 "<condition attribute='systemuserid' operator='eq' uitype='systemuser' value='" + _userId + "' />" +
+                               "</filter>" +
+                             "</entity>" +
+                             "</fetch>";
+            MobileCRM.FetchXml.Fetch.executeFromXML(_userFetch, function (data) {
+                if (data != null && data.length > 0) {
+                    _CurrentUserName = data[0].primaryName;
+                }
+            }, function (error) {
+                MobileCRM.bridge.alert('UserFunction: An error occurred: ' + error);
+                removePanels();
+            }, null);
+        }
+
+        function Views() {
+
+            var lookupForm = new MobileCRM.UI.LookupForm()
+            lookupForm.allowedViews = null; // Allow all views
+            lookupForm.allowNull = true; // Allow choosing empty value
+            lookupForm.entities = ["ebecssvy_survey"]; // Allow only accounts
+            lookupForm.show(onLookupFinished, MobileCRM.bridge.alert, null);
+
+        }
+
+        //All the survey information will be cleared and loads.
+        function onLookupFinished(surveyRef) {
+
+            SurveyId = surveyRef.id;
+            _surveyName = surveyRef.primaryName != null ? surveyRef.primaryName : "";
+            document.getElementById("SurveyName").innerHTML = _surveyName;
+            MobileCRM.UI.EntityForm.requestObject(function (entityForm) {
+                showQuestionsList = new Array();
+                hideQuestionsList = new Array();
+                showTabList = new Array();
+                hideTabList = new Array();
+                makeRequiredList = new Array();
+                sourceEntityName = entityForm.entity.entityName;
+                sourceEntityId = entityForm.entity.id;
+                GetTabs();
+            }, function (err) {
+                MobileCRM.bridge.alert('An error occurred: ' + err);
+                removePanels();
+            }, null);
+        }
+
+        var SurveyId = null; var _surveyName = null;
+        // Gets all the survey tabs which are associated to current survey template.
+        function GetTabs() {
+
+            var FetchXml = "<fetch resultformat='DynamicEntities' version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>" +
+                              "<entity name='ebecssvy_tabs'>" +
+                                "<attribute name='ebecssvy_tabsid' />" +
+                                "<attribute name='ebecssvy_name' />" +
+                                "<attribute name='createdon' />" +
+                                "<attribute name='ebecssvy_showdesigner' />" +
+                                "<attribute name='ebecssvy_order' />" +
+                                "<attribute name='ebecssvy_scoring'/>" +
+                                "<attribute name='ebecssvy_scoringrule'/>" +
+                                "<attribute name='ebecssvy_showtabscore'/>" +
+                                "<order attribute='ebecssvy_order' descending='false' />" +
+                                "<filter type='and'>" +
+                                  "<condition attribute='ebecssvy_surveyid' operator='eq'  uitype='ebecssvy_survey' value='" + SurveyId + "' />" +
+                                "</filter>" +
+                              "</entity>" +
+                            "</fetch>";
+            MobileCRM.FetchXml.Fetch.executeFromXML(FetchXml, function (data) { tabSuccessCallBack(data) }, function (error) { tabErrorCallBack(error) }, null);
+        }
+        function tabSuccessCallBack(data) {
+            if (data != null && data.length > 0) {
+                QuestionsArray = null;
+                Result_Tabs = data;
+                if (j >= 0) {
+                    if (lastSeenTabIndex != 0) {
+                        j = lastSeenTabIndex;
+                    }
+                    GetQuestions(Result_Tabs[j]);
+                }
+            }
+        }
+        function tabErrorCallBack(error) {
+            if (typeof alert != "undefined") {
+                MobileCRM.bridge.alert("Tab Error : " + error);
+                removePanels();
+            }
+        }
+
+        var BSGLArray = null;
+        var BSLookupArray = null;
+
+        /*
+       Retrieves questions which are related to current tab
+       */
+        function GetQuestions(data) {
+            GLArray = [];
+            BSGLArray = [];
+            LookupArray = [];
+            BSLookupArray = [];
+            noAnswersArray = [];
+            if ($('#divLoadingPanel').length > 0)
+                $('#divLoadingPanel').show();
+            MobileCRM.UI.EntityForm.requestObject(function (entityForm) {
+                /// <param name='entityForm' type='MobileCRM.UI.EntityForm'>current entity form</param>
+                var props = entityForm.entity.properties;
+                var CSTabObject = new Object();
+                CSTabObject.TabId = data.properties["ebecssvy_tabsid"];
+                CSTabObject.TabName = data.properties["ebecssvy_name"];
+                CSTabObject.CSId = _CConductedSurveyId;
+                CSTabObject.CSName = _CConductedSurveyName;
+                props.ebecssvy_responseguid = CSTabObject.CSId + "@" + CSTabObject.CSName + "@" + CSTabObject.TabId + "@" + CSTabObject.TabName;
+
+            }, MobileCRM.bridge.alert, null);
+            tabIsShowDesigner = "false";
+            _actionObject = null;
+            IsPerfromAction = false;
+            tabIsShowDesigner = data.properties["ebecssvy_showdesigner"] != null ? data.properties["ebecssvy_showdesigner"].toString() : "false";
+            var FetchXml_Qes = "<fetch resultformat='DynamicEntities' version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
+                              "<entity name='ebecssvy_questions'>" +
+                                "<attribute name='ebecssvy_questionsid' />" +
+                                "<attribute name='ebecssvy_name' />" +
+                                "<attribute name='ebecssvy_fetchxml' />" +
+                                "<attribute name='ebecssvy_entityviewname' />" +
+                                "<attribute name='ebecssvy_lookupentityname' />" +
+                                "<attribute name='ebecssvy_displayimage' />" +
+                                "<attribute name='createdon' />" +
+                                "<attribute name='ebecssvy_image' />" +
+                                "<attribute name='ebecssvy_mandatorywhenvisible' />" +
+                                "<attribute name='ebecssvy_imagewidthpx' />" +
+                                "<attribute name='ebecssvy_imageheightpx' />" +
+                                "<attribute name='ebecssvy_showasdefault' />" +
+                                "<attribute name='ebecssvy_attributetype' />" +
+                                "<attribute name='ebecssvy_inputcode' />" +
+                                "<attribute name='ebecssvy_disablemanualentry' />" +
+                                "<attribute name='ebecssvy_questionorderinsection' />" +
+                                "<attribute name='ebecssvy_scoring' />" +
+                                "<attribute name='ebecssvy_weight' />" +
+                                "<attribute name='ebecssvy_tabsid' />" +
+                                "<order attribute='ebecssvy_questionorder' descending='false' />" +
+                                "<order attribute='ebecssvy_questionorderinsection' descending='false' />" +
+                               "<filter type='and'>" +
+                                "<condition attribute='ebecssvy_tabsid' operator='eq'  uitype='ebecssvy_tabs' value='" + data.properties["ebecssvy_tabsid"] + "' />" +
+                                        "</filter>" +
+                                "<link-entity name='ebecssvy_surveysections' from='ebecssvy_surveysectionsid' to='ebecssvy_sectionname' alias='ac' visible='false' link-type='outer'>" +
+                                  "<order attribute='ebecssvy_sectionorder' descending='false' />" +
+                                   "<attribute name='ebecssvy_sectionorder' />" +
+                                     "<attribute name='ebecssvy_surveysectionsid' />" +
+                                     "<attribute name='ebecssvy_showasdefault' />" +
+                                "</link-entity>" +
+                              "</entity>" +
+                            "</fetch>";
+            MobileCRM.FetchXml.Fetch.executeFromXML(FetchXml_Qes, function (data) { QuesSuccessCallBack(data) }, function (error) { QuesErrorCallBack(error) }, null);
+        }
+
+        function QuesSuccessCallBack(data) {
+            if (data != null && data.length > 0) {
+                questionIndex = 0;
+                QuestionsArray = data;
+
+                var currentTabId = Result_Tabs[j].properties["ebecssvy_tabsid"];
+
+                $.each(data, function (e) {
+                    var questionId = this.properties["ebecssvy_questionsid"];
+
+                    var addingQuestion = true;
+
+                    if (tabQuestions != null && tabQuestions.length > 0 && tabQuestions.filter(function (e) { return e.questionid == questionId; }).length > 0) {
+                        addingQuestion = false;
+                    }
+
+                    if (addingQuestion) {
+                        var qusObj = new Object();
+
+                        qusObj.tabid = currentTabId;
+                        qusObj.questionid = questionId;
+                        qusObj.scoring = this.properties["ebecssvy_scoring"];
+
+                        tabQuestions.push(qusObj);
+                    }
+                });
+
+                GetAnswers(QuestionsArray[questionIndex]);
+            } else {
+                MobileCRM.bridge.alert("There are no questions in this Tab");
+                showFinish();
+                removePanels();
+                MobileCRM.Bridge.prototype.closeForm();
+            }
+        }
+        function QuesErrorCallBack(error) {
+            if (typeof alert != "undefined") {
+                MobileCRM.bridge.alert("Question Error : " + error);
+                removePanels();
+            }
+        }
+
+        // Get all answers which are related to a question
+        function GetAnswers(Result_Ques) {
+            // Get answers which are related to questions which are under one particular tab
+            //---------------------------------------
+            var FetchXml_Ans = "<fetch resultformat='DynamicEntities' version='1.0' output-format='xml-platform' mapping='logical' no-lock='true' distinct='true'>" +
+                                  "<entity name='ebecssvy_answers'>" +
+                                    "<attribute name='ebecssvy_answersid' />" +
+                                    "<attribute name='ebecssvy_name' />" +
+                                    "<attribute name='createdon' />" +
+                                    "<attribute name='ebecssvy_questionsid' />" +
+                                    "<attribute name='ebecssvy_scorevalue' />" +
+                                    "<order attribute='ebecssvy_questionsid' descending='false' />" +
+                                    "<filter type='and'>" +
+                                        "<condition attribute='ebecssvy_questionsid' operator='in'>";
+            for (var qIndex = 0 ; qIndex < QuestionsArray.length; qIndex++) {
+                FetchXml_Ans = FetchXml_Ans + "<value  uitype='ebecssvy_questions'>" + QuestionsArray[qIndex].id + "</value>";
+            }
+            FetchXml_Ans = FetchXml_Ans + "</condition></filter></entity></fetch>";
+            //----------------------------------------
+            MobileCRM.FetchXml.Fetch.executeFromXML(FetchXml_Ans, function (data) { AnsSuccessCallBack(data) }, function (error) { AnsErrorCallBack(error) }, null);
+        }
+        function AnsSuccessCallBack(data) {
+            Result_Ans = data;
+            SurveyAnswersActionsArray = Result_Ans;
+            SetQesAns(Result_Tabs, Result_Ans, j);
+        }
+        function AnsErrorCallBack(error) {
+            if (typeof alert != "undefined") {
+                MobileCRM.bridge.alert("Answer Error : " + error);
+                removePanels();
+            }
+        }
+
+        // Survey will end by changing conducted survey status
+        function Finish() {
+            MobileCRM.UI.EntityForm.closeWithoutSaving();
+        }
+
+        // Retrives and stores responses which are associted to current conducted survey
+        function GetResponsesForCS() {
+
+            CustomFilterQuestionArray = [];
+            FetchXMLQuestionArray = [];
+            showQuestionsList = new Array();
+            hideQuestionsList = new Array();
+            showTabList = new Array();
+            hideTabList = new Array();
+            makeRequiredList = new Array();
+            var _reponsesFetch = "<fetch version='1.0' resultformat='DynamicEntities' output-format='xml-platform' mapping='logical' distinct='true'>" +
+                                 "<entity name='ebecssvy_responses'>" +
+                                   "<attribute name='ebecssvy_responsesid' />" +
+                                   "<attribute name='ebecssvy_name' />" +
+                                   "<attribute name='ebecssvy_questionid' />" +
+                                   "<attribute name='ebecssvy_surveyanswerandid' />" +
+                                   "<attribute name='createdon' />" +
+                                   "<attribute name='ebecssvy_responsescore' />" +
+                                   "<order attribute='ebecssvy_name' descending='false' />" +
+                                   "<filter type='and'>" +
+                                     "<condition attribute='ebecssvy_conductedsurveyid' operator='eq' uitype='ebecssvy_conductedsurvey' value='" + _CConductedSurveyId + "' />" +
+                                   "</filter>" +
+                                 "</entity>" +
+                                 "</fetch>";
+            MobileCRM.FetchXml.Fetch.executeFromXML(_reponsesFetch, function (data) {
+                if (data != null && data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        var _rQId = data[i].properties["ebecssvy_questionid"] != null ? data[i].properties["ebecssvy_questionid"].id : null;
+                        var _rRId = data[i].id;
+                        var _rresponseScore = data[i].properties["ebecssvy_responsescore"] != null ? data[i].properties["ebecssvy_responsescore"] : null;
+                        if (_rQId != null) {
+                            var reponseObject = new Object();
+                            reponseObject.questionid = _rQId;
+                            reponseObject.responseid = _rRId;
+                            reponseObject.responsescore = _rresponseScore;
+                            reponseObject.name = data[i].properties["ebecssvy_name"];
+                            responsesRelatedToQuestion.push(reponseObject);
+                        }
+                    }
+                    GetTabs();
+                }
+                else
+                    GetTabs();
+
+            }, function (error) {
+                if (typeof alert != "undefined") {
+                    MobileCRM.bridge.alert("Response Error : " + error);
+                    removePanels();
+                }
+            }, null);
+        }
+        var Answer = null; var questionIndex = 0; var GLArray = null, LookupArray = null;
+
+        // Survey form will be built according to available data
+        function SetQesAns(Result_Tabs, Result_Ans1, j) {
+            var starAnsId = "";
+
+            ClearAndHideTabScore();
+
+            for (var qIndex = 0; qIndex < QuestionsArray.length; qIndex++) {
+
+                var Result_Ans = $.grep(Result_Ans1, function (arrayItem) {
+                    return arrayItem.properties["ebecssvy_questionsid"].id === QuestionsArray[questionIndex].id
+                });
+                var IsShowDefault = QuestionsArray[questionIndex].properties["ebecssvy_showasdefault"] != null ? QuestionsArray[questionIndex].properties["ebecssvy_showasdefault"].toString() : null;
+                var IsSectionShowDefault = QuestionsArray[questionIndex].properties["ac.ebecssvy_showasdefault"] != null ? QuestionsArray[questionIndex].properties["ac.ebecssvy_showasdefault"].toString() : null;
+                var IsMandatory = QuestionsArray[questionIndex].properties["ebecssvy_mandatorywhenvisible"] != null ? QuestionsArray[questionIndex].properties["ebecssvy_mandatorywhenvisible"].toString() : null;
+                IsMandatory = IsMandatory == "true" ? "true" : "false";
+                var ShowQuestion = (IsShowDefault == "false") ? "none" : "table-row";
+                var imgHeight = QuestionsArray[questionIndex].properties["ebecssvy_imageheightpx"] != null ? QuestionsArray[questionIndex].properties["ebecssvy_imageheightpx"].toString() : "75";
+                imgHeight = imgHeight == "0" ? "75" : imgHeight;
+                var imgWidth = QuestionsArray[questionIndex].properties["ebecssvy_imagewidthpx"] != null ? QuestionsArray[questionIndex].properties["ebecssvy_imagewidthpx"].toString() : "75";
+                imgWidth = imgWidth == "0" ? "75" : imgWidth;
+                var SectionId = QuestionsArray[questionIndex].properties["ac.ebecssvy_surveysectionsid"] != null ? QuestionsArray[questionIndex].properties["ac.ebecssvy_surveysectionsid"].toString() : null;
+                var inputCode = QuestionsArray[questionIndex].properties["ebecssvy_inputcode"] != null ? QuestionsArray[questionIndex].properties["ebecssvy_inputcode"].toString() : "";
+                var disableManualEntry = QuestionsArray[questionIndex].properties["ebecssvy_disablemanualentry"] != null ? QuestionsArray[questionIndex].properties["ebecssvy_disablemanualentry"] : false;
+                if (SectionId != null) {
+                    var showSection = IsSectionShowDefault == "true" ? "table-row" : "none";
+                    if (IsSectionShowDefault == "false")
+                        showSection = (getQuestionShown(SectionId) == "false") ? "none" : "table-row";
+                    if (hideQuestionsList.length > 0) {
+                        var showQuestionDynamic = getQuestionHidden(SectionId);
+                        showSection = (showQuestionDynamic == "true") ? "none" : "table-row";
+                    }
+                    ShowQuestion = showSection;
+                    if (ShowQuestion == "table-row")
+                        ShowQuestion = (IsShowDefault == "false") ? "none" : "table-row";
+
+                    if (ShowQuestion == "none" && getQuestionShown.length > 0)
+                        ShowQuestion = (getQuestionShown(QuestionsArray[questionIndex].id) == "false") ? "none" : "table-row";
+                    if (hideQuestionsList.length > 0) {
+                        var showQuestionDynamic = getQuestionHidden(QuestionsArray[questionIndex].id);
+                        ShowQuestion = (showQuestionDynamic == "true") ? "none" : "table-row";
+                    }
+
+                }
+                else {
+                    if (IsShowDefault == "false")
+                        ShowQuestion = (getQuestionShown(QuestionsArray[questionIndex].id) == "false") ? "none" : "table-row";
+                    if (hideQuestionsList.length > 0) {
+                        var showQuestionDynamic = getQuestionHidden(QuestionsArray[questionIndex].id);
+                        ShowQuestion = (showQuestionDynamic == "true") ? "none" : "table-row";
+                    }
+                }
+
+                var currentQuestion = QuestionsArray[questionIndex].id;
+                var Tab = Result_Tabs[j].properties["ebecssvy_name"];
+                var Question = QuestionsArray[questionIndex].properties["ebecssvy_name"];
+                order = Result_Tabs[j].properties["ebecssvy_order"];
+                AttributeType = QuestionsArray[questionIndex].properties["ebecssvy_attributetype"];
+                var isSRequired = IsQuestionRequired(SectionId);
+
+                if (AttributeType != null && AttributeType != undefined && order != null && order != undefined) {
+                    if (AttributeType == "213020000") {//Picklist
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td isRequired='" + IsMandatory + "' isshowdefault='" + IsShowDefault + "' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='Answer' id='" + QuestionsArray[questionIndex].id + "' ><select disabled style='height:30px;' id='piclistctrl" + QuestionsArray[questionIndex].id + "' ></select></td></tr></table></td>";
+
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr  ><td  colspan='2'><table class='section' style='width:100%;' id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "'>" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+
+                        var Opts = "";
+                        if (Result_Ans != null && Result_Ans.length > 0) {
+                            Opts = "<option value='abhayjlhjp'>---Select---</option>";
+                            for (var i in Result_Ans) {
+                                if (Result_Ans[i].properties["ebecssvy_name"] != "*") {
+                                    Opts += '<option answerid=' + Result_Ans[i].id + ' value="' + Result_Ans[i].properties["ebecssvy_name"] + '">' + Result_Ans[i].properties["ebecssvy_name"] + '</option>';
+                                }
+                            }
+                        }
+                        $(Opts).appendTo($("#piclistctrl" + QuestionsArray[questionIndex].id));
+                        $("select#piclistctrl" + QuestionsArray[questionIndex].id).val("abhayjlhjp");
+                        CheckResponse_Prev(QuestionsArray[questionIndex].id, SurveyId, AttributeType, "piclistctrl" + QuestionsArray[questionIndex].id);
+                        if (IsMandatory == "true") {
+                            if ($("#" + QuestionsArray[questionIndex].id).children().length > 0)
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                        }
+
+                    }
+                    else if (AttributeType == "213020001") {//TextBox
+
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td isRequired='" + IsMandatory + "' isshowdefault='" + IsShowDefault + "' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='Answer' id='" + QuestionsArray[questionIndex].id + "' ><input class='AnsControl'  disabled style='height:27px;width:85%;' customtype='text' id='TextAns" + QuestionsArray[questionIndex].id + "' type ='text'  " + inputCode + " /></td></tr></table></td>";
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr ><td  colspan='2'><table class='section' style='width:100%;'  id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                        CheckResponse_Prev(QuestionsArray[questionIndex].id, SurveyId, AttributeType, "TextAns" + QuestionsArray[questionIndex].id);
+                        if (IsMandatory == "true") {
+                            if ($("#" + QuestionsArray[questionIndex].id).children().length > 0)
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                        }
+                        $("#TextAns" + QuestionsArray[questionIndex].id).bind("keyup", function (event) {
+
+                            if (event.target.value.length > parseInt($(event.target).attr("max"))) {
+                                MobileCRM.bridge.alert("Exceeded " + $(event.target).attr("max") + " Characters");
+                                $("#" + event.target.id).focus();
+                                removePanels();
+                                return;
+                            }
+                        });
+                        $("#TextAns" + QuestionsArray[questionIndex].id).bind("keypress", function (event) {
+                            if (event.target.value.length > parseInt($(event.target).attr("maxlength"))) {
+                                MobileCRM.bridge.alert("Exceeded " + $(event.target).attr("maxlength") + " Characters");
+                                $("#" + event.target.id).focus();
+                                removePanels();
+                            }
+                        });
+                    }
+                    else if (AttributeType == "213020002") {//Whole Number
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td isRequired='" + IsMandatory + "' isshowdefault='" + IsShowDefault + "' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='Answer' id='" + QuestionsArray[questionIndex].id + "' ><input placeholder='Integer'  disabled style='height:27px;width:85%;' type ='text' customtype='integer' " + inputCode + " id ='integer" + QuestionsArray[questionIndex].id + "' customid ='" + QuestionsArray[questionIndex].id + "' /></td></tr></table></td>";
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr  ><td  colspan='2'><table class='section' style='width:100%;' id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "'>" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+
+                        $("#integer" + QuestionsArray[questionIndex].id).blur(function () {
+                            if ($("#" + this.id + "").val() != undefined) {
+                                var vall = $("#" + this.id + "").val();
+                                if (vall == "-" || vall == "_") {
+                                    $("#" + this.id + "").val("");
+                                }
+                            }
+                        });
+                        CheckResponse_Prev(QuestionsArray[questionIndex].id, SurveyId, AttributeType, "integer" + QuestionsArray[questionIndex].id);
+                        if (IsMandatory == "true") {
+                            if ($("#" + QuestionsArray[questionIndex].id).children().length > 0)
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                        }
+                    }
+                    else if (AttributeType == "213020003") {//Multi Line Text
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td isRequired='" + IsMandatory + "' isshowdefault='" + IsShowDefault + "' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='Answer' id='" + QuestionsArray[questionIndex].id + "' ><textarea type='text' disabled id = 'list" + QuestionsArray[questionIndex].id + "' style=' height: 50px;' rows='5' " + inputCode + "></textarea></td></tr></table></td>";
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr  ><td  colspan='2'><table class='section'  style='width:100%;'  id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+
+
+                        CheckResponse_Prev(QuestionsArray[questionIndex].id, SurveyId, AttributeType, "list" + QuestionsArray[questionIndex].id);
+                        if (IsMandatory == "true") {
+                            if ($("#" + QuestionsArray[questionIndex].id).children().length > 0)
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                        }
+                        $("#list" + QuestionsArray[questionIndex].id).keyup(function (event) {
+                            if (event.target.value.length > parseInt($(event.target).attr("max"))) {
+                                MobileCRM.bridge.alert("Exceeded " + $(event.target).attr("max") + " Characters");
+                                $("#" + event.target.id).focus();
+                                removePanels();
+                                return;
+                            }
+
+                        });
+                    }
+                    else if (AttributeType == "100000000") {//Checkbox
+
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td isRequired='" + IsMandatory + "' isshowdefault='" + IsShowDefault + "' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='Answer' id='" + QuestionsArray[questionIndex].id + "'><input disabled style='margin-left: 20px;' id='checkbox" + QuestionsArray[questionIndex].id + "' type='checkbox' customid ='" + QuestionsArray[questionIndex].id + "' /></td></tr></table></td>";
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr><td  colspan='2'><table class='section'  style='width:100%;'  id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+
+                        CheckResponse_Prev(QuestionsArray[questionIndex].id, SurveyId, AttributeType, "checkbox" + QuestionsArray[questionIndex].id);
+                        if (IsMandatory == "true") {
+                            if ($("#" + QuestionsArray[questionIndex].id).children().length > 0)
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                        }
+                    }
+                    else if (AttributeType == "213020006") {//Date/Time
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td isRequired='" + IsMandatory + "' isshowdefault='" + IsShowDefault + "' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='DateAnswer' id='" + QuestionsArray[questionIndex].id + "' ><input type ='text' disabled style='width:85%' customid ='datepicker" + QuestionsArray[questionIndex].id + "' id='datepicker" + QuestionsArray[questionIndex].id + "' value='' customtype='date' " + inputCode + " /></td></tr></table></td>";
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr><td  colspan='2'><table class='section'  style='width:100%;'  id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                        $("#datepicker" + QuestionsArray[questionIndex].id).kendoDateTimePicker({
+                            animation: false,
+                            value: null,
+                            change: function (e) {
+                                e.sender.close();
+                                e.sender.timeView.close();
+                            }
+                        });
+                        $("#datepicker" + QuestionsArray[questionIndex].id).attr("readonly", disableManualEntry);
+                        CheckResponse_Prev(QuestionsArray[questionIndex].id, SurveyId, AttributeType, "datepicker" + QuestionsArray[questionIndex].id);
+                        if (IsMandatory == "true") {
+                            if ($("#" + QuestionsArray[questionIndex].id).children().length > 0)
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                        }
+
+                    }
+                    else if (AttributeType == "100000001") {//Currency
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td isRequired='" + IsMandatory + "' isshowdefault='" + IsShowDefault + "' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='Answer' id='" + QuestionsArray[questionIndex].id + "' ><input placeholder='Currency' disabled customtype='currency' type ='text'  id='currency" + QuestionsArray[questionIndex].id + "' customid='" + QuestionsArray[questionIndex].id + "'  style='height:27px;width:85%;' " + inputCode + " /></td></tr></table></td>";
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr><td  colspan='2'><table class='section'  style='width:100%;'  id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+
+                        CheckResponse_Prev(QuestionsArray[questionIndex].id, SurveyId, AttributeType, "currency" + QuestionsArray[questionIndex].id);
+                        if (IsMandatory == "true") {
+                            if ($("#" + QuestionsArray[questionIndex].id).children().length > 0)
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                        }
+
+                    }
+                    else if (AttributeType == "100000003") {//Bool
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td isRequired='" + IsMandatory + "' class='Question' isshowdefault='" + IsShowDefault + "' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='Answer' id='Answer" + QuestionsArray[questionIndex].id + "' ></td></tr></table></td>";
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr><td  colspan='2'><table class='section'  style='width:100%;'  id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+
+                        if (Result_Ans != null && Result_Ans.length > 0) {
+                            for (var i in Result_Ans) {
+
+                                var ansData = Result_Ans[i].properties["ebecssvy_name"] != null ? Result_Ans[i].properties["ebecssvy_name"].replace(/ /g, '').replace(/[^a-zA-Z ]/g, "") : null;
+
+                                if (Result_Ans[i].properties["ebecssvy_name"] != "*") {
+                                    $("#Answer" + QuestionsArray[questionIndex].id).append("<input disabled answerid='" + Result_Ans[i].id + "' id='Radio" + Result_Ans[i].id + "' type ='Radio' value='" + ansData + "' name = 'radio" + QuestionsArray[questionIndex].id + "' myLabel='" + Result_Ans[i].properties["ebecssvy_name"] + "' /><lable class='sizeClass' style='margin-right:15px;'>" + Result_Ans[i].properties["ebecssvy_name"] + "</label>");
+                                }
+
+                            }
+                            CheckResponse_Prev(QuestionsArray[questionIndex].id, SurveyId, AttributeType, "Radio");
+                        }
+                        else
+                            noAnswersArray.push(QuestionsArray[questionIndex].id);
+                        if (IsMandatory == "true") {
+                            if ($("#" + QuestionsArray[questionIndex].id).children().length > 0)
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                        }
+                    }
+                    else if (AttributeType == "100000002") {//MultiCheckBox
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td isRequired='" + IsMandatory + "' isshowdefault='" + IsShowDefault + "' style='vertical-align:top;' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='MultipleAnswer' id='MultipleAnswer" + QuestionsArray[questionIndex].id + "' ></td></tr></table></td>";
+
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr><td  colspan='2'><table class='section'  style='width:100%;' id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+
+                        if (Result_Ans != null && Result_Ans.length > 0) {
+                            for (var i in Result_Ans) {
+                                var _option = Result_Ans[i].properties["ebecssvy_name"];
+                                var trimmedAns = _option.replace(/\s+/g, '').replace(/[^a-zA-Z ]/g, "");
+                                if (Result_Ans[i].properties["ebecssvy_name"] != "*") {
+                                    $("#MultipleAnswer" + QuestionsArray[questionIndex].id).append("<input disabled answerid='" + Result_Ans[i].id + "' type='checkbox' id='" + Result_Ans[i].id + "' /><label class='sizeClass' style='margin-right: 40px;'>" + _option + "</label><br />");
+                                }
+
+                            }
+                        }
+                        else
+                            noAnswersArray.push(QuestionsArray[questionIndex].id);
+
+                        CheckResponse_Prev(QuestionsArray[questionIndex].id, SurveyId, AttributeType, "checkbox", Result_Ans);
+                        if (IsMandatory == "true") {
+                            if ($("#" + QuestionsArray[questionIndex].id).children().length > 0)
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                        }
+                    }
+                    else if (AttributeType == "213020004") {//Graphical List)
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td isRequired='" + IsMandatory + "' isshowdefault='" + IsShowDefault + "' style='vertical-align:top;' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='GraphicalList' id='Answer" + QuestionsArray[questionIndex].id + "' ><input disabled id='GraphicalList" + QuestionsArray[questionIndex].id + "' class='customers-list' style='width: 85%'/></td></tr></table></td>";
+
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr><td  colspan='2'><table class='section'  style='width:100%;' id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                        if (Result_Ans != undefined && Result_Ans != null && Result_Ans.length > 0) {
+
+                            $("#GraphicalList" + QuestionsArray[questionIndex].id).kendoComboBox({
+                                filter: "startswith",
+                                open: function (e) {
+                                    $($($(e.sender.wrapper[0]).children("span"))).children("input").blur();
+                                },
+                                placeholder: "Select...",
+                                dataTextField: "RecordName",
+                                dataValueField: "ImageUrlDef",
+                                dataAnswerId: "AId",
+                                template: '<span class="k-state-default" style="background-image: url(\'#:ImageUrlDef#\'); float:right;display: block;overflow: hidden;height: 60px; width: 60px; background-size:100%;background-repeat:no-repeat;"></span>' +
+                                        '<span class="k-state-default"><div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; font-size:12px;">#: RecordName #</div></span>',
+                                dataSource: [],
+                                select: function (e) {
+                                    e.sender.close();
+                                },
+                                change: function (e) {
+                                    //BSGLArray = GLArray;
+                                    var localE = e;
+                                    var localThis = this;
+                                    if (this.select() == -1) {
+                                        var comboBoxCurrent = $("#" + this.input.context.id).data("kendoComboBox");
+                                        comboBoxCurrent.select(-1);
+                                        comboBoxCurrent.text("");
+                                    }
+                                    if (GLArray.length == 0) {
+                                        var GLObject = new Object();
+                                        GLObject.Qid = this.input.context.id;
+                                        if (localThis.dataItem() != undefined && localThis.dataItem() != null) {
+                                            GLObject.GLAnswer = this.dataItem().RecordName;
+                                            GLObject.GLAnswerId = this.dataItem().AId;
+                                        }
+                                        else {
+                                            GLObject.GLAnswer = "";
+                                            GLObject.GLAnswerId = "";
+                                        }
+                                        GLArray.push(GLObject);
+                                    }
+                                    else {
+                                        var found = "false";
+                                        $.each(GLArray, function () {
+                                            if (this.Qid == localE.sender.input.context.id) {
+                                                if (localThis.dataItem() != undefined && localThis.dataItem() != null) {
+                                                    this.GLAnswer = localThis.dataItem().RecordName;
+                                                    this.GLAnswerId = localThis.dataItem().AId;
+                                                }
+                                                else {
+                                                    this.GLAnswer = "";
+                                                    this.GLAnswerId = "";
+                                                }
+                                                found = "true";
+                                                return false;
+                                            }
+                                        });
+                                        if (found == "false") {
+                                            var GLObject = new Object();
+                                            GLObject.Qid = this.input.context.id;
+                                            if (localThis.dataItem() != undefined && localThis.dataItem() != null) {
+                                                GLObject.GLAnswer = this.dataItem().RecordName;
+                                                GLObject.GLAnswerId = this.dataItem().AId;
+                                            }
+                                            else {
+                                                GLObject.GLAnswer = "";
+                                                GLObject.GLAnswerId = "";
+                                            }
+                                            GLArray.push(GLObject);
+                                        }
+                                    }
+                                },
+                                height: 200
+                            });
+                            for (var i = 0; i < Result_Ans.length; i++) {
+                                var answerImg = Result_Ans[i];
+                                attachImagesToGL(answerImg, QuestionsArray[questionIndex].id, answerImg.properties["ebecssvy_name"], answerImg.properties["ebecssvy_answersid"], i, Result_Ans, AttributeType);
+                            }
+
+
+                        }
+                        else {
+                            var combobox = $("#GraphicalList" + QuestionsArray[questionIndex].id).data("kendoComboBox");
+                            noAnswersArray.push(QuestionsArray[questionIndex].id);
+                            //changes adi
+                            $("#GraphicalList" + QuestionsArray[questionIndex].id).kendoComboBox({
+                                filter: "startswith",
+                                open: function (e) {
+                                    $($($(e.sender.wrapper[0]).children("span"))).children("input").blur();
+                                },
+                                placeholder: "No records...",
+                                dataTextField: "RecordName",
+                                dataValueField: "ImageUrlDef",
+                                dataRecordId: "RId",
+                                template: '<span class="k-state-default" style="background-image: url(\'#:ImageUrlDef#\'); float:right;display: block;overflow: hidden;height: 60px; width: 60px; background-size:100%;background-repeat:no-repeat;"></span>' +
+                                                '<span class="k-state-default"><div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; font-size:12px;">#: RecordName #</div></span>',
+                                dataSource: [],
+                                select: function (e) {
+                                    e.sender.close();
+                                },
+                                change: function (e) {
+
+                                },
+                                height: 200
+                            });
+                        }
+
+                        if (IsMandatory == "true") {
+                            if ($("#" + QuestionsArray[questionIndex].id).children().length > 0)
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                        }
+                    }
+                    else if (AttributeType == 213020008) {//Display Image
+
+                        var dynamicTable = "<td class='Question' isshowdefault='" + IsShowDefault + "' id='" + QuestionsArray[questionIndex].id + "' ><label style='display:none;'>" + Question + "</label><img id='Image" + QuestionsArray[questionIndex].id + "' style='Width:" + imgWidth + "px;height:" + imgHeight + "px;' /></td><td class='Answer' id='" + QuestionsArray[questionIndex].id + "' ></td>";
+
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr><td  colspan='2'><table class='section'  style='width:100%;' id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+
+                        var ImageId = QuestionsArray[questionIndex].properties["ebecssvy_image"] != null ? QuestionsArray[questionIndex].properties["ebecssvy_image"].id : null;
+                        if (ImageId != null)
+                            AppendImage(ImageId, "Image" + QuestionsArray[questionIndex].id);
+                    }
+                    else if (AttributeType == 213020005) {//Label
+
+                        var dynamicTable = "<td class='Question' isshowdefault='" + IsShowDefault + "' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td><td class='Answer' id='" + QuestionsArray[questionIndex].id + "' ></td>";
+
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr><td  colspan='2'><table  class='section' style='width:100%;' id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+
+                    }
+                    else if (AttributeType == 213020010) {//Show Child Survey
+                        MobileCRM.bridge.enableDebug();
+                        debugger;
+                        var gridName = "mainChildSurveyGrid" + questionIndex;
+                        var dynamicTable = "<td colSpan='2' ><table style='width:100%!important;'><tr><td isRequired='" + IsMandatory + "' isshowdefault='" + IsShowDefault + "' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='Answer' id='" + QuestionsArray[questionIndex].id + "' > <div id='" + gridName + "' style='padding:0px; height:300px;'></div> </td></tr></table></td>";
+                        retrieveChildSurveyData(questionIndex);
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr><td  colspan='2'><table  class='section' style='width:100%;' id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                    }
+                    else if (AttributeType == 213020009) {//Image Capture
+
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td  style='vertical-align:top;' isshowdefault='" + IsShowDefault + "' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='Answer' id='" + QuestionsArray[questionIndex].id + "' ><input disabled id='captureImagelookup" + QuestionsArray[questionIndex].id + "' class='customers-list' style='width: 85%;'/></td></tr></table></td>";
+
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr><td  colspan='2'><table class='section'  style='width:100%;' id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                        populatePictureRecordsLoad(QuestionsArray[questionIndex].id);
+                    }
+                    else if (AttributeType == 213020007) {//Lookup
+                        var _fetchXml = QuestionsArray[questionIndex].properties["ebecssvy_fetchxml"] != null ? QuestionsArray[questionIndex].properties["ebecssvy_fetchxml"] : null;
+                        var _viewName = QuestionsArray[questionIndex].properties["ebecssvy_entityviewname"] ? QuestionsArray[questionIndex].properties["ebecssvy_entityviewname"] : null;
+                        var _entityName = QuestionsArray[questionIndex].properties["ebecssvy_lookupentityname"] ? QuestionsArray[questionIndex].properties["ebecssvy_lookupentityname"] : null;
+                        var _displayImage = QuestionsArray[questionIndex].properties["ebecssvy_displayimage"] ? QuestionsArray[questionIndex].properties["ebecssvy_displayimage"] : null;
+
+                        var fetchQObject = new Object();
+                        fetchQObject.fetch = _fetchXml;
+                        fetchQObject.entityName = _entityName;
+                        fetchQObject.displayIMage = _displayImage;
+                        fetchQObject.qId = QuestionsArray[questionIndex].id;
+                        fetchQObject.qName = Question;
+                        var _fetchIndex = findFetchIndex(FetchXMLQuestionArray, QuestionsArray[questionIndex].id);
+                        if (_fetchIndex != -1) {
+                            FetchXMLQuestionArray[_fetchIndex] = fetchQObject;
+                        }
+                        else
+                            FetchXMLQuestionArray.push(fetchQObject);
+                        var dynamicTable = "<td><table style='width:100%;'><tr><td isRequired='" + IsMandatory + "' isshowdefault='" + IsShowDefault + "' style='vertical-align:top;' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td></tr><tr><td class='Lookup' id='Answer" + QuestionsArray[questionIndex].id + "' ><input disabled id='Lookup" + QuestionsArray[questionIndex].id + "' class='customers-list' style='width: 85%'/></td></tr></table></td>";
+
+
+                        if (SectionId != null) {
+                            var tableElement = $('#QAConatiner').find("#" + SectionId);
+                            if (tableElement.length > 0)
+                                $(tableElement).append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                            else
+                                $('#QAConatiner').append("<tr><td  colspan='2'><table class='section'  style='width:100%;'  id='" + SectionId + "'><tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "<tr></table></td></tr>");
+                            if (isSRequired == "true") {
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                            }
+                        }
+                        else
+                            $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "' >" + dynamicTable + "</tr>");
+                        if (IsMandatory == "true") {
+                            if ($("#" + QuestionsArray[questionIndex].id).children().length > 0)
+                                $($("#" + QuestionsArray[questionIndex].id).children()[0]).addClass('required');
+                        }
+
+                        populateLookupRecords(QuestionsArray[questionIndex].id, Question, _fetchXml, _entityName, AttributeType, _displayImage);
+                    }
+                    else if (AttributeType == 213020011) { //Capture Score   
+                        if (responsesRelatedToQuestion != null && typeof responsesRelatedToQuestion != "undefined" && responsesRelatedToQuestion.length > 0) {
+                            var currentReponseId = null;
+                            var tabScore = 0;
+                            $.each(responsesRelatedToQuestion, function () {
+                                if (this.questionid == QuestionsArray[questionIndex].id) {
+                                    currentReponseId = this.responsescore;
+                                    tabScore = this.name
+                                }
+                            });
+
+                            ShowTabScore(tabScore);
+                        }
+                    }
+                    else if (AttributeType != 213020011) { //Skip Capture Score question type
+                        $('#QAConatiner').append("<tr class='mainTr' style='display:" + ShowQuestion + "'><td isRequired='false' class='Question' id='" + QuestionsArray[questionIndex].id + "'><label>" + Question + "</label></td><td class='Answer' id='" + QuestionsArray[questionIndex].id + "' ></td></tr>");
+                    }
+                    questionIndex++;
+                    if (highlightQ != null) {
+                        if ($("#" + highlightQ).length > 0) {
+                            $("#" + highlightQ).addClass('GoToQuestionStyle');
+                            highlightQ = null;
+                        }
+                    }
+
+                    var isQRequired = IsQuestionRequired(currentQuestion);
+                    if (isQRequired == "true") {
+                        var qRequired = currentQuestion;
+                        if ($("#" + qRequired).length > 0) {
+                            var questionTd = $("#" + qRequired + ".Question");
+                            $(questionTd).attr("isRequired", true);
+                            if ($(questionTd).children().length > 0)
+                                $($(questionTd).children()[0]).addClass('required');
+                        }
+                    }
+                }
+                removePanels();
+                if (j >= 1)
+                    document.getElementById('previousid').disabled = false;
+                else {
+                    document.getElementById('previousid').disabled = true;
+                }
+                if (j == Result_Tabs.length - 1) {
+                    document.getElementById('nextid').disabled = true;
+                }
+
+            }
+        }
+
+        function AppendImage(ImageId, questionId) {
+            MobileCRM.DynamicEntity.loadDocumentBody("ebecssvy_images", ImageId, function (data) {
+                var imgElement = "data:image/jpeg;base64," + data;
+                $("#" + questionId)[0].src = imgElement;
+            },
+            function (error) {
+                var imgElement = "data:image/png;base64," + noImage;
+                $("#" + questionId)[0].src = imgElement;
+
+            }, null);
+
+        }
+
+        var FetchXMLQuestionArray = null;
+        var CustomFilterQuestionArray = null;
+
+        function populatePictureRecords(_lQId, imgUrl, pictureName, pictureId) {
+
+
+            var combobox = $("#captureImagelookup" + _lQId).data("kendoComboBox");
+
+            $($($(combobox.wrapper[0]).children("span"))).children("input").css({ "background-color": "transparent", "box-sizing": "border-box", "height": "30px" });
+            $($($(combobox.wrapper[0]).children("span"))).children("input").css({ "padding-right": "30px" });
+            $($($(combobox.wrapper[0]).children())).children("div#CBI").css("background-image", "url(" + imgUrl + ")");
+            $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("display", "block");
+            var imgElement = "data:image/jpeg;base64," + imgUrl;
+            combobox.dataSource.add({ RecordName: pictureName, ImageUrlDef: imgUrl, RId: pictureId });
+            combobox.text(pictureName);
+            combobox.readonly(true);
+            removePanels();
+        }
+        // Loads images on the survey form
+        function populatePictureRecordsLoad(_lQId) {
+            showLoadingMessage_Process();
+
+            $("#captureImagelookup" + _lQId).kendoComboBox({
+                filter: "startswith",
+                open: function (e) {
+                    IsChanged = "false";
+                    $($($(e.sender.wrapper[0]).children("span"))).children("input").blur();
+                },
+                placeholder: "Select...",
+                dataTextField: "RecordName",
+                dataValueField: "ImageUrlDef",
+                dataRecordId: "RId",
+                enable:false,
+                template: '<span class="k-state-default" style="background-image: url(\'#:ImageUrlDef#\'); float:right;display: block;overflow: hidden;height: 60px; width: 60px; background-size:100%;background-repeat:no-repeat;"></span>' +
+                                         '<span class="k-state-default"><div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; font-size:12px;">#: RecordName #</div></span>',
+                dataSource: [],
+                select: function (e) {
+                    IsChanged = "true";
+                    e.sender.close();
+                },
+                change: function (e) {
+                    if (this.select() == -1) {
+                        var comboBoxCurrent = $("#" + this.input.context.id).data("kendoComboBox");
+                        comboBoxCurrent.select(-1);
+                        comboBoxCurrent.text("");
+                    }
+                    $($($(e.sender.wrapper[0]).children("span"))).children("div#CBI").css("display", "none");
+                    $($($(e.sender.wrapper[0]).children("span"))).children("input").css({ "padding-right": "0px" });
+                    $($($(e.sender.wrapper[0]).children("span"))).children("div#CBI").css("background-image", "url(" + this.dataItem().ImageUrlDef + ")");
+                    if (this.dataItem() != undefined && this.dataItem() != null) {
+                        $($($(e.sender.wrapper[0]).children("span"))).children("div#CBI").css("display", "block");
+                        $($($(e.sender.wrapper[0]).children("span"))).children("input").css({ "padding-right": "30px" });
+                    }
+
+                },
+                height: 200
+            });
+            var combobox = $("#captureImagelookup" + _lQId).data("kendoComboBox");
+            $($($(combobox.wrapper[0]).children("span"))).children("input").css({ "background-color": "transparent", "box-sizing": "border-box", "height": "30px" });
+            $($($(combobox.wrapper[0]).children())).prepend('<div  id="CBI" class="LookupImage" style="background-image: url(); float: left;background-size: 100% 100%;background-repeat: no-repeat;border-radius: 50%; display:none; "></div>');
+            combobox.readonly(true);
+            var finalFetch = "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true' resultformat='DynamicEntities'>" +
+                              "<entity name='ebecssvy_picture'>" +
+                                "<attribute name='ebecssvy_pictureid' />" +
+                                "<attribute name='ebecssvy_name' />" +
+                                "<order attribute='createdon' descending='true' />" +
+                                "<filter type='and'>" +
+                                  "<condition attribute='ebecssvy_surveyquestionid' operator='eq' uitype='ebecssvy_questions' value='" + _lQId + "' />" +
+                                   "<condition attribute='ebecssvy_conductedsurvey' operator='eq' uitype='ebecssvy_conductedsurvey' value='" + _CConductedSurveyId + "' />" +
+                                "</filter>" +
+                                "<link-entity name='annotation' from='objectid' to='ebecssvy_pictureid' alias='aa_note' visible='false' link-type='outer'>" +
+                                  "<order attribute='createdon' descending='true' />" +
+                                   "<attribute name='annotationid' />" +
+                                    "<attribute name='documentbody' />" +
+                                "</link-entity>" +
+                              "</entity>" +
+                            "</fetch>";
+            MobileCRM.FetchXml.Fetch.executeFromXML(finalFetch, function (data) {
+                if (data != null && data.length > 0) {
+                    var globalPictureId = null;
+
+                    for (var i = 0; i < data.length; i++) {
+                        var pictureId = data[i].properties["ebecssvy_pictureid"];
+                        if (globalPictureId == null) {
+                            globalPictureId = pictureId;
+                            var annotationId = data[i].properties["aa_note.annotationid"] != null ? data[i].properties["aa_note.annotationid"] : null;
+                            var pictureName = data[i].properties["ebecssvy_name"];
+                            if (annotationId != null) {
+                                attachImagesToPicture(pictureName, annotationId, pictureId, combobox, i, data);
+                            }
+                            else {
+                                combobox.dataSource.add({ RecordName: pictureName, ImageUrlDef: null, RId: pictureId });
+                                if (i == data.length - 1) {
+                                    combobox.readonly(true);
+                                    combobox.select(0);
+                                    var _url = combobox.value();
+                                    $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("background-image", "url(" + _url + ")");
+                                    $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("display", "none");
+                                    $($($(combobox.wrapper[0]).children("span"))).children("input").css({ "padding-right": "0px" });
+                                    removePanels();
+                                }
+                            }
+                        }
+                        if (globalPictureId != null && globalPictureId != pictureId) {
+                            globalPictureId = pictureId;
+                            var annotationId = data[i].properties["aa_note.annotationid"] != null ? data[i].properties["aa_note.annotationid"] : null;
+                            var pictureName = data[i].properties["ebecssvy_name"];
+                            if (annotationId != null) {
+
+                                attachImagesToPicture(pictureName, annotationId, pictureId, combobox, i, data);
+                            }
+                            else {
+                                combobox.dataSource.add({ RecordName: pictureName, ImageUrlDef: null, RId: pictureId });
+                                if (i == data.length - 1) {
+                                    combobox.readonly(true);
+                                    combobox.select(0);
+                                    var _url = combobox.value();
+                                    $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("background-image", "url(" + _url + ")");
+                                    $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("display", "none");
+                                    $($($(combobox.wrapper[0]).children("span"))).children("input").css({ "padding-right": "0px" });
+                                    removePanels();
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                    removePanels();
+            }, function (error) {
+                document.getElementById('Save').disabled = false;
+
+                if (typeof alert != "undefined") {
+                    MobileCRM.bridge.alert("Picture Error : " + error);
+
+                    removePanels();
+                }
+
+            }, null);
+        }
+        var noImage = "iVBORw0KGgoAAAANSUhEUgAAAD4AAAA+CAYAAABzwahEAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAO4SURBVGhD7ZppS+RAEIb9/z/CA3RUvBi88IMX6qB4Il6IJ4gXKireqLU8zQZEqpPMdPXuhJkHXlbYpIo30+murk6LNCgtra2t0mhqGm80NY03mprGG01N47HV09Mj8/Pzsr+/Lzc3N3J+fi57e3uyuroqvb296j0xFd340NCQHB0duURpXF1dyfDwsBojhiCa8aWlJfn6+nJJ8sIoaG9vV+NZCqIY39nZccFr4eLiQjo7O9W4VgJz4xsbGy5wCGdnZ9LW1qbGtxCYGh8ZGZHv728XOJT19XU1h4XAzDi/0P39vQtqAfNDf3+/mitUYGZ8enraBbTk5OREzRUqMDPOkmQNr01fX5+aL0RgYpwiJBYrKytqzhCBifGpqSkXLAanp6dqzhCBiXGLJczH4+OjmjNEYGKcGjwmHR0dat5aBSbGDw8PXbBYsMnR8tYqKMQvbr2Dg7p/x8G6dgcT4zGKl4S3tzc1Z4jAxPjAwIALFgOaFlrOEIGJccSyE4O6LmDQ2tqaC2gJJWt3d7eaL0RgZryrq0s+Pj5cUCtoW2m5QgVmxhHD0gq2pcwdWp5Qgalx9uRMRhYsLy+rOSwEpsZRqVSSh4cHF7xWGOKFaj0lYkK6vr52CaqF5kPsTitEMY7YWNBtzduD+/z8lMXFRTWWtSCa8USDg4NycHDgKjCN19dX2dzcjLJs+QRBxmkGUqczrN/f392/c3Nz6rW8s+VyWSYnJ2VhYcGVuVltJRoctJpZJjl64sCBGNq11ahm4+Pj467x74P3lElOuzePeMfTDiVub2/dA9TuzSOoyjhmGLZ5eHl5kYmJCTVOmjhvu7u7+xslHR4A12tx0gS5jdMMeHp6cjdVA3v1PPtpHur29nbVBxK8BmNjY2pMnyCXccrRkLWZGfv4+FhmZmbcO8pDZDLj70ql4v4vpNxlgqymDQ25jO/u7rqL6xkmv7xFD2QaZzmyOg+LjW9F+S3INM57VxRYTjUPvwWpxhk6vsKjXskzkUKqcYZ50cgz3CHVeMwmYiyYiDUvPwWpxmO3jWNARal5+SlINZ63Sqsnnp+fVS8/BanGLy8v3UVFI+usDVKN11Ki1gNZn5CA1zhLWVEKl99kfSwIXuPUvkUla1cIXuOjo6PugiIyOzurekoEXuPspIpKVu8OvMb5FrWoUH9onhKB1/jW1pa7oIhkVW/gNR77846YZJ25gde41VHQ/4DOrOYpEXiNW36X+q/J2peD1zh98qLCj6Z5SgSqcWrdIkNrW/OVSETkD7jlTunEta0vAAAAAElFTkSuQmCC";
+        var tranparentImage = "iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBDRDJCQURFOEU4QTExRTVCNEJDODRGQTg0MkVDQUFGIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBDRDJCQURGOEU4QTExRTVCNEJDODRGQTg0MkVDQUFGIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MENEMkJBREM4RThBMTFFNUI0QkM4NEZBODQyRUNBQUYiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MENEMkJBREQ4RThBMTFFNUI0QkM4NEZBODQyRUNBQUYiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4AIMhPAAAC9ElEQVR42uzUQREAAAjDMMC/56EDLpHQRztJAVwwEgCGBWBYgGEBGBaAYQGGBWBYAIYFGBaAYQEYFmBYAIYFYFiAYQEYFoBhAYYFYFgAhgUYFoBhARgWYFgAhgVgWIBhARgWYFgAhgVgWIBhARgWgGEBhgVgWACGBRgWgGEBGBZgWACGBWBYgGEBGBaAYQGGBWBYAIYFGBaAYQEYFmBYAIYFYFiAYQEYFmBYAIYFYFiAYQEYFoBhAYYFYFgAhgUYFoBhARgWYFgAhgVgWIBhARgWgGEBhgVgWACGBRgWgGEBGBZgWACGBWBYgGEBGBZgWACGBWBYgGEBGBaAYQGGBWBYAIYFGBaAYQEYFmBYAIYFYFiAYQEYFoBhAYYFYFgAhgUYFoBhARgWYFgAhgVgWIBhARgWYFgAhgVgWIBhARgWgGEBhgVgWACGBRgWgGEBGBZgWACGBWBYgGEBGBaAYQGGBWBYAIYFGBaAYQEYFmBYAIYFYFiAYQEYFmBYAIYFYFiAYQEYFoBhAYYFYFgAhgUYFoBhARgWYFgAhgVgWIBhARgWgGEBhgVgWACGBRgWgGEBGBZgWACGBWBYgGEBGBZgWACGBWBYgGEBGBaAYQGGBWBYAIYFGBaAYQEYFmBYAIYFYFiAYQEYFoBhAYYFYFgAhgUYFoBhARgWYFgAhgVgWIBhARgWYFgAhgVgWIBhARgWgGEBhgVgWACGBRgWgGEBGBZgWACGBWBYgGEBGBaAYQGGBWBYAIYFGBaAYQEYFmBYAIYFYFiAYQEYFmBYAIYFYFiAYQEYFoBhAYYFYFgAhgUYFoBhARgWYFgAhgVgWIBhARgWgGEBhgVgWACGBRgWgGEBGBZgWACGBRiWBIBhARgWYFgAhgVgWIBhARgWgGEBhgVgWACGBRgWgGEBGBZgWACGBWBYgGEBGBaAYQGGBWBYAIYFGBaAYQEYFmBYAIYFGBaAYQEYFmBYAIYFYFiAYQEYFoBhAYYFYFgAhgV8tgIMAOkpBVVs062bAAAAAElFTkSuQmCC";
+        // This function is used to populate lookup data
+        function populateLookupRecords(_lQId, QuestionName, _fetch, entityName, attype, _displayImage) {
+            showLoadingMessage_Process();
+            if (_fetch != null) {
+                var fetchObj = $(_fetch);
+                $(fetchObj[0]).attr("resultformat", "DynamicEntities");
+                var CFIndex = findCustomFilterIndex(CustomFilterQuestionArray, _lQId);
+
+                if (CFIndex != -1) {
+                    var _customFilter = CustomFilterQuestionArray[CFIndex].cusotmFilter;
+                    if (_customFilter != null)
+                        $(fetchObj[0]).find("entity").append(_customFilter);
+                }
+                var finalFetch = fetchObj[0].outerHTML.toString();
+
+                var hideName = "block";
+                var hideImage = "block";
+
+                if (_displayImage == 213020000 || _displayImage == 213020002)
+                    hideName = "block";
+                else
+                    hideName = "none";
+
+                if (_displayImage == 213020000)
+                    hideImage = "none";
+
+
+                MobileCRM.FetchXml.Fetch.executeFromXML(finalFetch, function (data) {
+                    if (data != null && data.length > 0) {
+                        var IsChanged = "true";
+                        $("#Lookup" + _lQId).kendoComboBox({
+                            filter: "startswith",
+                            placeholder: "Select...",
+                            dataTextField: "RecordName",
+                            dataValueField: "ImageUrlDef",
+                            dataRecordId: "RId",
+                            enable: false,
+                            template: '<span class="k-state-default" style="background-image: url(\'#:ImageUrlDef#\'); float:right;display: ' + hideImage + ';overflow: hidden;height: 60px; width: 60px; background-size:100%;background-repeat:no-repeat;"></span>' +
+                                        '<span class="k-state-default"><div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:' + hideName + '; font-size:12px;">#: RecordName #</div></span>',
+                            dataSource: [],
+                            select: function (e) {
+                                IsChanged = "true";
+                                e.sender.close();
+                            },
+                            height: 200
+                        });
+                        var combobox = $("#Lookup" + _lQId).data("kendoComboBox");
+
+                        $($($(combobox.wrapper[0]).children("span"))).children("input").css({ "background-color": "transparent", "box-sizing": "border-box", "height": "30px" });
+                        $($($(combobox.wrapper[0]).children())).prepend('<div  id="CBI" class="LookupImage" style="background-image: url(); float: left;background-size: 100% 100%;background-repeat: no-repeat;border-radius: 50%; display:none; "></div>');
+                        if (_displayImage == 614020001 || _displayImage == 614020002) {
+                        }
+                        combobox.readonly(true);
+                        for (var i = 0; i < data.length; i++) {
+                            var answerImg = data[i];
+                            attachImagesToLookup(answerImg, _lQId, answerImg.primaryName, answerImg.id, answerImg.entityName, i, data, attype);
+
+                            if (i == data.length - 1) {
+
+                            }
+                        }
+                    }
+                    else {
+                        noAnswersArray.push(_lQId);
+                        $("#Lookup" + _lQId).kendoComboBox({
+                            filter: "startswith",
+                            open: function (e) {
+                                $($($(e.sender.wrapper[0]).children("span"))).children("input").blur();
+                            },
+                            placeholder: "No records...",
+                            dataTextField: "RecordName",
+                            dataValueField: "ImageUrlDef",
+                            dataRecordId: "RId",
+                            template: '<span class="k-state-default" style="background-image: url(\'#:ImageUrlDef#\'); float:right;display: block;overflow: hidden;height: 60px; width: 60px; background-size:100%;background-repeat:no-repeat;"></span>' +
+                                        '<span class="k-state-default"><div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; font-size:12px;">#: RecordName #</div></span>',
+                            dataSource: [],
+                            select: function (e) {
+                                e.sender.close();
+                            },
+                            change: function (e) {
+
+                            },
+                            height: 200
+                        });
+                        removePanels();
+                        if ($(_lQId).children().length > 0)
+                            $($(_lQId).children()[0]).removeClass('required');
+
+                        var combobox = $("#Lookup" + _lQId).data("kendoComboBox");
+                        combobox.readonly(true);
+
+                        var dropdownlist = $("#Lookup" + _lQId).data("kendoDropDownList")
+                        dropdownlist.enable(false);
+
+                        $(_lQId).attr("isRequired", false);
+                    }
+                }, function (error) {
+                    noAnswersArray.push(_lQId);
+                    document.getElementById('Save').disabled = false;
+                    $("#Lookup" + _lQId).kendoComboBox({
+                        filter: "startswith",
+                        open: function (e) {
+                            $($($(e.sender.wrapper[0]).children("span"))).children("input").blur();
+                        },
+                        placeholder: "No records...",
+                        dataTextField: "RecordName",
+                        dataValueField: "ImageUrlDef",
+                        dataRecordId: "RId",
+                        template: '<span class="k-state-default" style="background-image: url(\'#:ImageUrlDef#\'); float:right;display: block;overflow: hidden;height: 60px; width: 60px; background-size:100%;background-repeat:no-repeat;"></span>' +
+                                        '<span class="k-state-default"><div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; font-size:12px;">#: RecordName #</div></span>',
+                        dataSource: [],
+                        select: function (e) {
+                            e.sender.close();
+                        },
+                        change: function (e) {
+
+                        },
+                        height: 200
+                    });
+                    if (typeof alert != "undefined") {
+                        if (error.indexOf("object refernce not set to instance of an object") != -1)
+                            MobileCRM.bridge.alert("Error in binding lookup question (" + QuestionName + ")\nPlease make sure the entity or attributes are enabled in woodford");
+                        else
+                            MobileCRM.bridge.alert("Error in binding lookup question (" + QuestionName + ")\n" + error);
+
+                        removePanels();
+                    }
+                    if ($(_lQId).children().length > 0)
+                        $($(_lQId).children()[0]).removeClass('required');
+
+                    var combobox = $("#Lookup" + _lQId).data("kendoComboBox");
+                    combobox.readonly(true);
+
+                    var dropdownlist = $("#Lookup" + _lQId).data("kendoDropDownList")
+                    dropdownlist.enable(false);
+
+                    $(_lQId).attr("isRequired", false);
+                }, null);
+            }
+            else {
+                noAnswersArray.push(_lQId);
+                $("#Lookup" + _lQId).kendoComboBox({
+                    filter: "startswith",
+                    open: function (e) {
+                        $($($(e.sender.wrapper[0]).children("span"))).children("input").blur();
+                    },
+                    placeholder: "No records...",
+                    dataTextField: "RecordName",
+                    dataValueField: "ImageUrlDef",
+                    dataRecordId: "RId",
+                    template: '<span class="k-state-default" style="background-image: url(\'#:ImageUrlDef#\'); float:right;display: block;overflow: hidden;height: 60px; width: 60px; background-size:100%;background-repeat:no-repeat;"></span>' +
+                                        '<span class="k-state-default"><div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; font-size:12px;">#: RecordName #</div></span>',
+                    dataSource: [],
+                    select: function (e) {
+                        e.sender.close();
+                    },
+                    change: function (e) {
+
+                    },
+                    height: 200
+                });
+                removePanels();
+
+                var combobox = $("#Lookup" + _lQId).data("kendoComboBox");
+                combobox.readonly(true);
+
+                var dropdownlist = $("#Lookup" + _lQId).data("kendoDropDownList")
+                dropdownlist.enable(false);
+
+                if ($(_lQId).children().length > 0)
+                    $($(_lQId).children()[0]).removeClass('required');
+
+
+                $(_lQId).attr("isRequired", false);
+            }
+        }
+        // Retrieves the attachments which contains image information
+        function getNotes(GLAnsName, annotationId, GLAnsId, combobox, currentI, dataLength) {
+            var noteFetch = "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false' resultformat='DynamicEntities' >" +
+                            "<entity name='annotation'>" +
+
+                              "<attribute name='documentbody' />" +
+                              "<attribute name='annotationid' />" +
+                              "<order attribute='createdon' descending='false' />" +
+                              "<filter type='and'>" +
+                                "<condition attribute='annotationid' operator='eq' uitype='annotation' value='" + annotationId + "' />" +
+                              "</filter>" +
+                            "</entity>" +
+                          "</fetch>";
+            MobileCRM.FetchXml.Fetch.executeFromXML(noteFetch, function (data) {
+                if (data != null && data.length > 0) {
+
+                    var noteAttachment = data[0].properties["documentbody"] != null ? data[0].properties["documentbody"] : null
+                    var imgElement = "data:image/jpeg;base64," + noteAttachment;
+                    var recPrimayName = GLAnsName != null ? GLAnsName : "(No Name)";
+                    combobox.dataSource.add({ RecordName: recPrimayName, ImageUrlDef: imgElement, RId: GLAnsId });
+                    if (currentI == dataLength.length - 1) {
+                        combobox.readonly(true);
+                        combobox.select(0);
+                        var _url = combobox.value();
+                        $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("background-image", "url(" + _url + ")");
+                        $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("display", "block");
+                        $($($(combobox.wrapper[0]).children("span"))).children("input").css({ "padding-right": "30px" });
+                        //combobox.text("");
+                        removePanels();
+                    }
+                }
+            }, function (error) { MobileCRM.bridge.alert("Note Error : " + error); removePanels(); }, null);
+        }
+        // Attach images to the survey
+        function attachImagesToPicture(GLAnsName, annotationId, GLAnsId, combobox, currentI, dataLength, noteAttahment) {
+            if (isOnline.toString() == "true") {
+                getNotes(GLAnsName, annotationId, GLAnsId, combobox, currentI, dataLength);
+            }
+            else if (isOnline.toString() == "false") {
+                MobileCRM.DynamicEntity.loadDocumentBody("annotation", annotationId, function (data) {
+                    var imgElement = "data:image/jpeg;base64," + data;
+                    var recPrimayName = GLAnsName != null ? GLAnsName : "(No Name)";
+                    combobox.dataSource.add({ RecordName: recPrimayName, ImageUrlDef: imgElement, RId: GLAnsId });
+                    if (currentI == dataLength.length - 1) {
+                        combobox.readonly(true);
+                        combobox.select(0);
+                        var _url = combobox.value();
+                        $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("background-image", "url(" + _url + ")");
+                        $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("display", "block");
+                        $($($(combobox.wrapper[0]).children("span"))).children("input").css({ "padding-right": "30px" });
+                        removePanels();
+                    }
+                },
+                   function (error) {
+                       var imgElement = "data:image/png;base64," + noImage;
+                       var recPrimayName = GLAnsName != null ? GLAnsName : "(No Name)";
+                       combobox.dataSource.add({ RecordName: recPrimayName, ImageUrlDef: null, RId: GLAnsId });
+                       if (currentI == dataLength.length - 1) {
+                           combobox.readonly(true);
+                           combobox.select(0);
+                           var _url = combobox.value();
+                           $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("display", "none");
+                           $($($(combobox.wrapper[0]).children("span"))).children("input").css({ "padding-right": "0px" });
+                           removePanels();
+                       }
+                   }
+                   );
+            }
+        }
+        // Attaches images to the lookup control
+        function attachImagesToLookup(answerImg, QGLId, GLAnsName, GLAnsId, entityName, currentI, dataLength, attype, LoadType) {
+            MobileCRM.DynamicEntity.loadDocumentBody(entityName, answerImg.id, function (data) {
+                var imgElement = "data:image/jpeg;base64," + data;
+                var combobox = $("#Lookup" + QGLId).data("kendoComboBox");
+                combobox.enable(false);
+                var recPrimayName = GLAnsName != null ? GLAnsName : "(No Name)";
+                combobox.dataSource.add({ RecordName: recPrimayName, ImageUrlDef: imgElement, RId: GLAnsId });
+                if (currentI == dataLength.length - 1) {
+                    combobox.readonly(true);
+                    combobox.select(-1);
+                    combobox.text("");
+                    if (LoadType == "ApplyFilter")
+                        removePanels();
+                    else {
+                        CheckResponse_Prev(QGLId, SurveyId, attype, "Lookup" + QGLId, null, dataLength, "true");
+                    }
+                }
+            },
+               function (error) {
+                   var combobox = $("#Lookup" + QGLId).data("kendoComboBox");
+                   var imgElement = "data:image/png;base64," + noImage;
+                   var recPrimayName = GLAnsName != null ? GLAnsName : "(No Name)";
+                   combobox.dataSource.add({ RecordName: recPrimayName, ImageUrlDef: imgElement, RId: GLAnsId });
+                   if (currentI == dataLength.length - 1) {
+                       combobox.readonly(true);
+                       combobox.select(-1);
+                       combobox.text("");
+                       if (LoadType == "ApplyFilter")
+                           removePanels();
+                       else {
+                           CheckResponse_Prev(QGLId, SurveyId, attype, "Lookup" + QGLId, null, dataLength, "true");
+                       }
+                       //removePanels();
+                   }
+               }
+               );
+
+        }
+
+        // Used to attach images to graphical list
+        function attachImagesToGL(answerImg, QGLId, GLAnsName, GLAnsId, index, dataLength, AttributeType) {
+            MobileCRM.DynamicEntity.loadDocumentBody("ebecssvy_answers", answerImg.id, function (data) {
+                var imgElement = "data:image/jpeg;base64," + data;
+                var combobox = $("#GraphicalList" + QGLId).data("kendoComboBox");
+                combobox.dataSource.add({ RecordName: GLAnsName, ImageUrlDef: imgElement, AId: GLAnsId });
+                if (index == dataLength.length - 1)
+                    CheckResponse_Prev(QGLId, SurveyId, AttributeType, "GraphicalList" + QGLId);
+            },
+            function (error) {
+                var combobox = $("#GraphicalList" + QGLId).data("kendoComboBox");
+                var imgElement = "data:image/png;base64," + noImage;
+                combobox.dataSource.add({ RecordName: GLAnsName, ImageUrlDef: imgElement, AId: GLAnsId });
+                if (index == dataLength.length - 1)
+                    CheckResponse_Prev(QGLId, SurveyId, AttributeType, "GraphicalList" + QGLId);
+            }, null);
+
+        }
+        // Used to move to the previous tab.
+        function Previous(moveIndex) {
+
+            var currentJ = j;
+            showLoadingMessage_Process("Navigating to previous tab");
+
+            ButtonType = "prev";
+            if (moveIndex != undefined && moveIndex != null)
+                j = moveIndex;
+            else
+                j--;
+            $("#Questionid").empty();
+            $("#Answerid").empty();
+
+            if (j >= 0) {
+
+                $("#QAConatiner").empty();
+                $("#imgServey").css("display", "none");
+                HideorShowTab(false, "Image Survey");
+
+                GetQuestions(Result_Tabs[j]);
+
+                $("#nextid").show();
+
+                ShowFinalSurveyScoreButton();
+            }
+        }
+
+        var ButtonType = ""; var IsAnswerChanged = false; var IsAnswered = false;
+        // Used to move to the next available tab.
+        function Next(moveIndex) {
+            var currentJ = j;
+            showLoadingMessage_Process("Navigating to next tab");
+                ButtonType = "next";
+                if (moveIndex != undefined && moveIndex != null)
+                    j = moveIndex;
+                else
+                    j++;
+
+                if (j >= 0) {
+                    $("#Questionid").empty();
+                    $("#Answerid").empty();
+
+                    $("#QAConatiner").empty();
+                    $("#imgServey").css("display", "none");
+                    HideorShowTab(false, "Image Survey");
+
+                    GetQuestions(Result_Tabs[j]);
+
+                    if (j == Result_Tabs.length - 1) {
+                        $("#nextid").hide();
+                    }
+                    Answer = null;
+
+                    ShowFinalSurveyScoreButton();
+                }
+        }
+
+        // Checks whether to display question or not on survey form
+        function getQuestionHidden(_currentQuestionId) {
+            if (hideQuestionsList.length > 0 && hideQuestionsList.indexOf(_currentQuestionId) != -1) {
+                return "true";
+            }
+            return "false";
+        }
+
+        // Checks whether to display question or not on survey form
+        function getQuestionShown(_currentQuestionId) {
+            if (showQuestionsList.length > 0 && showQuestionsList.indexOf(_currentQuestionId) != -1) {
+                return "true";
+            }
+            return "false";
+        }
+
+        //checks whether question is required question or not.
+        function IsQuestionRequired(_currentQuestionId) {
+            if (makeRequiredList.length > 0 && makeRequiredList.indexOf(_currentQuestionId) != -1) {
+                return "true";
+            }
+            return "false";
+        }
+
+        // Checks whether a tab is hidden tab or not
+        function getTabHidden(_currentTabid) {
+            if (hideTabList.length > 0 && hideTabList.indexOf(_currentTabid) != -1) {
+                return "true";
+            }
+            return "false";
+        }
+
+
+        var targetSaveArray = null;
+        var targetPrevArray = null;
+        var _IsLastQuestion = false;
+
+        function findLookupIndex(arr, obj) {
+            var elementPos = arr.map(function (x) { return x.Qid; }).indexOf(obj);
+            return elementPos;
+        }
+        function findNoteIndex(arr, obj) {
+            var elementPos = arr.map(function (x) { return x.noteId; }).indexOf(obj);
+            return elementPos;
+        }
+        function findFetchIndex(arr, obj) {
+            var elementPos = arr.map(function (x) { return x.qId; }).indexOf(obj);
+            return elementPos;
+        }
+
+        function findCustomFilterIndex(arr, obj) {
+            var elementPos = arr.map(function (x) { return x.qId; }).indexOf(obj);
+            return elementPos;
+        }
+
+        function findGLIndex(arr, obj) {
+            var elementPos = arr.map(function (x) { return x.Qid; }).indexOf(obj);
+            return elementPos;
+        }
+
+        var actionsCollection = null;
+        var showQuestionsList = null;
+        var hideQuestionsList = null;
+        var showTabList = null;
+        var hideTabList = null;
+        var makeRequiredList = null;
+
+        function removePanels() {
+            if ($('#divLoadingPanel').length > 0)
+                $('#divLoadingPanel').remove();
+            if ($('#loadingImg').length > 0)
+                $('#loadingImg').remove();
+        }
+
+        var globalIsSaved = "false";
+
+        function showFinish() {
+            if (j == Result_Tabs.length - 1) {
+                $("#nextid").hide();
+            }
+
+
+            if (j == Result_Tabs.length - 2) {
+                var _nextTabid = Result_Tabs[j].id;
+                if (hideTabList.length > 0 && hideTabList.indexOf(_nextTabid) != -1) {
+                    $("#nextid").hide();
+                }
+            }
+        }
+
+        // Checks the previuos response
+        function CheckResponse_Prev(_qid, _surveyId, AttributeType, controlId, QRAnswers, lookupEntries, IsRemovePanels) {
+            //MobileCRM.bridge.enableDebug();
+            //debugger;
+            if (responsesRelatedToQuestion.length > 0) {
+                var currentReponseId = null;
+                $.each(responsesRelatedToQuestion, function () {
+                    if (this.questionid == _qid)
+                        currentReponseId = this.responseid;
+                });
+                if (currentReponseId != null) {
+
+                    var _responseFetch = "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true' resultformat='DynamicEntities'>" +
+                                          "<entity name='ebecssvy_responses'>" +
+                                            "<attribute name='ebecssvy_responsesid' />" +
+                                            "<attribute name='ebecssvy_name' />" +
+                                            "<attribute name='createdon' />" +
+                                             "<attribute name='ebecssvy_surveyanswer' />" +
+                                              "<attribute name='ebecssvy_xmlresponse' />" +
+                                               "<attribute name='ebecssvy_surveyanswerandid' />" +
+                                            "<order attribute='createdon' descending='false' />" +
+                                           "<filter type='and'>" +
+                                                               "<condition attribute='ebecssvy_responsesid' operator='eq' value='" + currentReponseId + "' />" +
+                                            "</filter>" +
+                                          "</entity>" +
+                                        "</fetch>";
+
+                    MobileCRM.FetchXml.Fetch.executeFromXML(_responseFetch, function (data) {
+                        if (data != null && data.length > 0) {
+                            //debugger;
+                            var _xml = data[0].properties["ebecssvy_xmlresponse"];
+                            var dom = $(_xml);
+                            var ans = $(dom).find("SurveyAnswer")[0].textContent;
+                            var _ansId = data[0].properties["ebecssvy_surveyanswerandid"] != null ? data[0].properties["ebecssvy_surveyanswerandid"] : null;
+
+                            if (ans != undefined && ans != null) {
+                                IsAnswered = true;
+                                if (j == Result_Tabs.length - 1) {
+                                    $("#nextid").hide();
+                                }
+
+                                if (j == Result_Tabs.length - 2) {
+                                    var _nextTabid = Result_Tabs[j].id;
+                                    if (hideTabList.length > 0 && hideTabList.indexOf(_nextTabid) != -1) {
+                                        $("#nextid").hide();
+                                    }
+                                }
+                                if (tabIsShowDesigner == "true") {
+                                    $("#imgServey").css("display", "table-cell");
+                                    HideorShowTab(true, "Image Survey");
+                                }
+                                if (Result_Tabs.length > 1)
+                                    document.getElementById('nextid').disabled = false;
+
+                                if (AttributeType == "213020000") {//picklist
+                                    $("#" + controlId).val(ans);
+                                }
+                                else if (AttributeType == "213020001") {//TextBox
+                                    $("#" + controlId).val(ans);
+                                }
+                                else if (AttributeType == "213020003 ") {//List
+                                    $("#" + controlId).val(ans);
+                                }
+                                else if (AttributeType == "213020002") {//Whole Number
+                                    $("#" + controlId).val(ans);
+                                }
+                                else if (AttributeType == "213020006") {//Date
+                                    var datetimepicker = $("#" + controlId).data("kendoDateTimePicker");
+                                    datetimepicker.value(new Date(ans));
+                                }
+                                else if (AttributeType == "100000000") {//Checkbox
+                                    if (ans == "true")
+                                        $("#" + controlId).prop('checked', true);
+                                }
+                                else if (AttributeType == "100000001") {//Currency
+                                    $("#" + controlId).val(ans);
+                                }
+                                else if (AttributeType == "100000003") {//Bool
+                                    var ansData = ans != null ? ans.replace(/ /g, '').replace(/[^a-zA-Z ]/g, "") : null;
+                                    $('input[type=radio]', '#Answer' + _qid).val([ansData]);
+                                }
+                                else if (AttributeType == "100000002") {//MultiCheckBox
+                                    if (ans != null) {
+                                        var multiAns = ans.split(',');
+                                        $.each(QRAnswers, function () {
+                                            var AName = this.properties["ebecssvy_name"];
+                                            if (multiAns.indexOf(AName) != -1) {
+                                                $("#" + this.id).prop('checked', true);
+                                            }
+                                        });
+
+                                    }
+                                }
+                                else if (AttributeType == "213020004") {//Graphical List)
+
+                                    var _name = "";
+                                    var recordIndex = -1;
+                                    var combobox = $("#" + controlId).data("kendoComboBox");
+                                    if (_ansId != null) {
+
+                                        var comboItems = combobox.dataItems();
+                                        if (comboItems != null && comboItems.length > 0) {
+                                            $.each(comboItems, function (index, element) {
+                                                if (_ansId.toLowerCase() == this.AId.toLowerCase()) {
+                                                    _name = this.RecordName;
+                                                    recordIndex = index;
+                                                }
+                                            });
+                                        }
+                                    }
+                                    var GLObject = new Object();
+                                    GLObject.Qid = controlId;
+                                    GLObject.GLAnswer = _name;
+                                    GLObject.GLAnswerId = _ansId;
+                                    GLArray.push(GLObject);
+                                    combobox.select(recordIndex);
+                                }
+                                else if (AttributeType == "213020007") {//Lookup)
+                                    var _name = "";
+                                    var recordIndex = -1;
+                                    var combobox = $("#" + controlId).data("kendoComboBox");
+                                    if (_ansId != null) {
+
+                                        var comboItems = combobox.dataItems();
+                                        if (comboItems != null && comboItems.length > 0) {
+                                            $.each(comboItems, function (index, element) {
+                                                if (_ansId.toLowerCase() == this.RId.toLowerCase()) {
+                                                    _name = this.RecordName;
+                                                    recordIndex = index;
+                                                }
+                                            });
+                                        }
+                                    }
+                                    var GLObject = new Object();
+                                    GLObject.Qid = controlId;
+                                    GLObject.GLAnswer = _name;
+                                    GLObject.GLAnswerId = _ansId;
+                                    LookupArray.push(GLObject);
+                                    combobox.select(recordIndex);
+                                    if (recordIndex != -1) {
+                                        var _url = combobox.value();
+                                        $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("background-image", "url(" + _url + ")");
+                                        $($($(combobox.wrapper[0]).children("span"))).children("div#CBI").css("display", "block");
+                                        $($($(combobox.wrapper[0]).children("span"))).children("input").css({ "padding-right": "30px" });
+                                    }
+
+                                }
+                                if (IsRemovePanels == "true")
+                                    removePanels();
+                            }
+                            else {
+                                if (AttributeType == "213020008" || AttributeType == "213020005" || AttributeType == "213020009") {//DisplayImage, CaptureImage, Label
+                                    if (Result_Tabs.length > 1)
+                                        document.getElementById('nextid').disabled = false;
+                                }
+                            }
+                        }
+                        else {
+                            document.getElementById('nextid').disabled = true;
+                            if (j == Result_Tabs.length - 1) {
+                                $("#nextid").hide();
+                            }
+                            if (IsRemovePanels == "true")
+                                removePanels();
+                        }
+                    }, function (error) {
+                        if (typeof alert != "undefined") {
+                            MobileCRM.bridge.alert(" CheckResponse_Prev Error : " + error);
+                            removePanels();
+                        }
+                    }, null);
+                }
+                else {
+                    if (IsRemovePanels == "true")
+                        removePanels();
+                }
+            }
+            else {
+                if (IsRemovePanels == "true")
+                    removePanels();
+            }
+        }
+
+        function findlookupEntryIndex(arr, obj) {
+            var elementPos = arr.map(function (x) { return x.id; }).indexOf(obj);
+            return elementPos;
+        }
+        function CheckResponse_Next(_answer, _surveyId) {
+            GetQuestions(Result_Tabs[j]);
+        }
+
+        var CSStatusUpdationFlag = false;
+        var questionInstance = null;
+
+        // Image survey view will be opened
+        function OpenDataDesigner() {
+
+            if (AppVersion != null && parseFloat(AppVersion) < 8) {
+                HideorShowTab(true, "Image Survey");
+                MobileCRM.bridge.alert("Tap on Image Survey");
+
+            }
+            else {
+                MobileCRM.UI.EntityForm.prototype.selectTab("Image Survey", function (data) {
+                    //alert("Test please igno")
+                }, null);
+            }
+        }
+
+        // Displays loading panel
+        function showLoadingMessage_Process(LoadingMessage) {
+            if (isFinished == true) {
+            }
+            else {
+                var loadingPanel = "<div id='divLoadingPanel' style='background-color:#F2F2F2;  filter: alpha(opacity=70); width: 100%; height: 100%; text-align: center; display: block; position: absolute; top:0px; z-index:9999;'>" +
+                                   "</div><div id='loadingImg' style='position:absolute; top:47%; left:45%; z-index:9999; width: auto; text-align: center; padding: 0px;' ><img src='progress.gif' position='absolute' top:'0' bottom='0' margin='auto'>" + //background: #fff
+                                   "<br /><label id='errorPostingLoadingPanelText' Text='Error in Processing...' style='font-size:12px; font-weight: bold;padding: 15px;'>Processing...</label></div>";
+
+                $(loadingPanel).prependTo("body");
+            }
+        }
+
+        /*
+         Description : Conducted survey can also perform child survey. A conducted survey can be predictes as child if its ebecssvy_parentconductedsurvey attribute contains parent conducted survey information
+         */
+        function retrieveChildSurveyData(questionIndex) {
+
+            var gridName = "mainChildSurveyGrid" + questionIndex;
+
+            $("#" + gridName).empty();
+
+            var dynamicChildRecodsGrid = null;
+            var childSurveyData = new Array();
+            MobileCRM.UI.EntityForm.requestObject(function (entityForm) {
+                var childSurveyFetchXml = "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'  resultformat='DynamicEntities'>" +
+                                            "<entity name='ebecssvy_conductedsurvey'>" +
+                                            "<attribute name='ebecssvy_conductedsurveyid' />" +
+                                            "<attribute name='ebecssvy_name' />" +
+                                            "<attribute name='ebecssvy_surveytemplateid' />" +
+                                            "<attribute name='ebecssvy_parentconductedsurvey' />" +
+                                            "<attribute name='createdon' />" +
+                                            "<attribute name='ebecssvy_creator' />" +
+                                            "<order attribute='ebecssvy_order' descending='false' />" +
+                                            "<filter type='and'>" +
+                                            "<condition attribute='ebecssvy_parentconductedsurvey' operator='eq'  value='{" + entityForm.entity.id + "}' />" +
+                                            "</filter>" +
+                                            "</entity>" +
+                                            "</fetch>";
+
+                MobileCRM.FetchXml.Fetch.executeFromXML(childSurveyFetchXml, function (data) {
+                    if (data != null && data.length > 0) {
+                        //Assigining value to chils survey count after refresh the grid
+                        //This will maintain the order
+                        childSurveyCount = data.length;
+                        //showLoadingMessage_Process("Child survey are loading");
+                        for (var i = 0; i < data.length; i++) {
+                            var recordData = new Array();
+                            recordData = { index: i, parentRecordId: "", csId: "", csName: "", csTemplateName: "", csTemplateId: "", createdBy: "" };
+                            recordData.parentRecordId = data[i].properties["ebecssvy_parentconductedsurvey"] != null ? data[i].properties["ebecssvy_parentconductedsurvey"].id : null;
+                            recordData.csId = data[i].properties["ebecssvy_conductedsurveyid"] != null ? data[i].properties["ebecssvy_conductedsurveyid"] : null;
+                            recordData.csName = data[i].properties["ebecssvy_name"] != null ? data[i].properties["ebecssvy_name"] : null;
+                            recordData.csTemplateId = data[i].properties["ebecssvy_surveytemplateid"] != null ? data[i].properties["ebecssvy_surveytemplateid"].id : null;
+                            recordData.csTemplateName = data[i].properties["ebecssvy_surveytemplateid"] != null ? data[i].properties["ebecssvy_surveytemplateid"].primaryName : null;
+                            recordData.createdBy = data[i].properties["ebecssvy_creator"] != null ? data[i].properties["ebecssvy_creator"].primaryName : null;
+                            childSurveyData.push(recordData);
+
+                        }
+
+                        dynamicChildRecodsGrid =
+
+             " <div id='childSurveyDataDivId' style='width:100%; height: 300px; overflow: auto;'>" +
+                 "   <table class='survey_tbl' id='CSDataTableId' style='width: 100%;' cellpadding='3' cellspacing='0'> <tr>" +
+                               "<th>Name </th>" +
+
+                          " </tr>";
+
+
+                        if (childSurveyData.length > 0) {
+                            for (var count = 0; count < childSurveyData.length; count++) {
+                                dynamicChildRecodsGrid = dynamicChildRecodsGrid + "<tr><td><div class='text_overflow'><label id='" + childSurveyData[count].csId + "'  class='Cust_Row' style=' color: black;' >" + childSurveyData[count].csName + "</label> </div></td> </tr>";
+                            }
+                            dynamicChildRecodsGrid = dynamicChildRecodsGrid + " </table>" +
+                         "  </div>";
+                        }
+                        else {
+                            dynamicChildRecodsGrid = dynamicChildRecodsGrid + " <tr><td> No Reocrds..</td></tr>" +
+                                 " </table>" +
+                         "  </div>";
+                        }
+                        $("#" + gridName).append(dynamicChildRecodsGrid);
+
+                    }
+                    else {
+
+                        dynamicChildRecodsGrid =
+
+             " <div id='childSurveyDataDivId' style='width: 100%; height: 300px; overflow: auto;'>" +
+                 "   <table class='survey_tbl' id='CSDataTableId' style='width: 100%;' cellpadding='3' cellspacing='0'> <tr>" +
+                               "<th>Name      <button style='margin-right: 15px; float:right;' gridName='" + questionIndex + "' id='" + questionIndex + "' value='Refresh' onclick='Click(this)'>  Refresh</button></th>" +
+
+                          " </tr>" +
+                          "<tr><td>No Records Found.</td></tr>" +
+                         " </table>" +
+                        "  </div>";
+                        $("#" + gridName).append(dynamicChildRecodsGrid);
+                        removePanels();
+                    }
+
+                }, function (error) {
+                    if (typeof alert != "undefined") {
+                        MobileCRM.bridge.alert(" executeAction Error : " + error);
+                        removePanels();
+                    }
+                }, null);
+
+            }, function (err) {
+                MobileCRM.bridge.alert('An error occurred: ' + err);
+                removePanels();
+            }, null);
+
+        }
+
+        // Used to refresh child survey grid
+        function Click(context) {
+            if (context.id != "") {
+                retrieveChildSurveyData(context.id);
+            }
+        }
+
+        //While on save of the record
+        function onSave() {
+            MobileCRM.UI.EntityForm.onSave(
+	function (entityForm) {
+	    var statusCode = null;
+	    if (entityForm !== null && typeof entityForm !== "undefined" && entityForm.entity !== null && typeof entityForm.entity !== "undefined" && entityForm.entity.properties["statuscode"] !== null && typeof entityForm.entity.properties["statuscode"] !== "undefined") {
+	        statusCode = entityForm.entity.properties["statuscode"];
+	    }
+	    if (statusCode !== null) {
+	        if (statusCode == 213020003 || statusCode == 213020002 || statusCode == 213020000) //in pr NOT ST schedu
+	            HideorShowTab(true, "Take Survey");
+	        if (entityForm.entity.isNew) {
+	            showLoadingMessage_Process();
+	            //if (entityForm.entity.isOnline)
+	                //validateLicenseOnline();
+	            //else
+	                //validateLicenseOffline();
+	        }
+	    }
+	    else {
+	        HideorShowTab(false, "Take Survey");
+	    }
+	    // Return false to ignore all changes
+	    return true;
+	},
+        true,
+        null
+);
+        }
+
+        /*******************************************************
+        * ShowTabScore *
+        * Show tab score in web resource based on the configuration *
+        ********************************************************/
+        function ShowTabScore(score) {
+            $("#lblScoringValue").append(score);
+
+            $('#lblScoring').show();
+            $('#lblScoringValue').show();
+
+            $('#divScoring').show();
+        }
+
+        /*******************************************************
+        * ClearAndHideTabScore *
+        * Clear and hide tab score labels *
+        ********************************************************/
+        function ClearAndHideTabScore() {
+            $("#lblScoringValue").empty();
+            $('#lblScoring').hide();
+            $('#lblScoringValue').hide();
+        }
+
+        /*******************************************************
+        * ShowFinalSurveyScoreButton *
+        * This function determine show final score button or not *
+        ********************************************************/
+        function ShowFinalSurveyScoreButton() {
+
+            //If survey not retrieved early then retrieve it again
+            if (surveyTemplate == null || typeof surveyTemplate == "undefined" || surveyTemplate.properties == null) {
+                surveyTemplate = getSurveyTemplate(SurveyId);
+            }
+
+            if (surveyTemplate != null && typeof surveyTemplate != "undefined" && surveyTemplate.properties["ebecssvy_scoring"] != null
+                && surveyTemplate.properties["ebecssvy_scoring"] && (Result_Tabs.length - 1) == j) {
+
+                if ($("#showfinalscoreid") != null) {
+                    $("#showfinalscoreid").show();
+                }
+            } else {
+
+                if ($("#showfinalscoreid") != null) {
+                    $("#showfinalscoreid").hide();
+                }
+            }
+        }
+
+        /*******************************************************
+        * ShowFinalSurveyScoreOnClick *
+        * Show final score as an alert *
+        ********************************************************/
+        function ShowFinalSurveyScoreOnClick()
+        {
+            if (finalScore != null && typeof finalScore != "undefined") {
+                MobileCRM.bridge.alert("Your Final Score is: " + finalScore);
+            }
+        }
+
+              
+    </script>
+</head>
+<body onload="OnLoad()">
+    <div style="width: 100%;">
+        <div class="header">
+            <div class="contactheader">
+                <table style="width: 100%; margin-top: 10px; table-layout: fixed;" cellpadding="0"
+                       cellspacing="0">
+
+                    <tr>
+                        <td style="width: 60%; text-align: left;">
+                            <label style="text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; overflow: hidden; display: block; width: 100%; color: black; font-weight: bold;"
+                                   id="SurveyName">
+                            </label>
+                        </td>
+                        <td style="text-align: right; width: 120px;" id="imgServey">
+                            <button style="margin-right: 20px; min-width: 120px;" value="Next" onclick="OpenDataDesigner()">
+                                Load Design
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="body_content" style="overflow: auto;">
+            <div style="padding: 0px;">
+                <table id="QAConatiner" style="width: 100%; table-layout: fixed;"></table>
+            </div>
+
+        </div>
+        <div class="footer">
+            <div id="divScoring" class="scorevalue">
+                <label id="lblScoring" style="font-weight:bold; display:none;">Tab Score:</label>
+                <label id="lblScoringValue" for="ScoringValue" style="display:none;"></label>
+            </div>
+            <div align="right" style="margin-right: 15px">
+                <table>
+                    <tr>
+                        <td style="width: 100%;">
+                            <button style="margin-left: 6px;" id="previousid" value="Previous" onclick="Previous()">
+                                Previous
+                            </button>
+                        </td>
+                        <td style="text-align: right;" colspan="2">
+                            <button title="Show Final Score" class="icon_button" id="showfinalscoreid" style="width:100px; margin-right: 15px; display:none;" align="right" value="Survey Score" onclick="ShowFinalSurveyScoreOnClick()">Final Score</button>
+                        </td>
+                        <td style="text-align: right;">
+                            <button style="margin-right: 15px;" id="Finish" value="Finish" onclick="Finish()">
+                                Close
+                            </button>
+                        </td>
+                        <td style="text-align: right;">
+                            <button style="margin-right: -14px;" id="nextid" value="Next" onclick="Next()">
+                                Next
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,667 @@
+<html>
+<head>
+	<!-- Activate IE9 document mode, if available -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<!-- Defined iOS viewport -->
+	<meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=false">
+	<script type="text/javascript" src="../JSBridge.js"></script>
+	<script type="text/javascript">
+	
+	//globals
+	var oldBookingStatusLookup = null;
+	var oldBookingSubStatusLookup = null;
+	
+	var newFieldServiceStatus = null;
+        //TD 23-12-2016 added these two as requested to prevent timestamps being needlessly created 
+	var createTimeStamp = true;
+	var wait = null;
+
+//event triggers/handlers
+function Form_OnLoad()
+	{
+         MobileCRM.bridge.enableDebug();
+
+			 MobileCRM.UI.EntityForm.requestObject(
+				function (entityForm) 
+				{
+					//alert("Form_OnLoad method triggered"); 
+					 //document.getElementById("Results").innerHTML = "<p>" + MobileCRM.DynamicEntity + "</p>"; 
+					//MyOutput("Entered Form_OnLoad method"); 
+					 //MobileCRM.bridge.alert("Equivalent to JS alert to test JS Bridge...");
+					//MyOutput("attempting to obtain current record guid..."); 
+	
+					//MobileCRM.bridge.alert("Form_OnLoad triggered...");
+		
+					var currentRecord = null;
+					
+					currentRecord = entityForm.entity;
+					
+					if (currentRecord != null && currentRecord.isNew == false)
+					{
+						//MyOutput("current record id is : " + currentRecord.id);   //MobileCRM.bridge.alert(currentQuote.id);
+					    //MobileCRM.bridge.alert("Form_OnLoad current record id is : " + currentRecord.id);
+
+					    oldBookingStatusLookup = currentRecord.properties.bookingstatus;
+					    oldBookingSubStatusLookup = currentRecord.properties.ebecsfs_currentsubstatus;
+
+					    //var detailView = entityForm.getDetailView("General");
+					    //oldBookingStatusLookup = detailView.getItemByName("bookingstatus");
+					    //oldBookingSubStatusLookup = detailView.getItemByName("ebecsfs_currentsubstatus");
+
+					    //MobileCRM.bridge.alert("Form_OnLoad old Booking Status lookup is : " + oldBookingStatusLookup + "\n old Booking Sub Status lookup is : " + oldBookingSubStatusLookup);
+						
+						//TD experiment in passing a value to code in text fieldset
+						//createRecordFromAction();
+
+						//MyOutput("let's see if execution hits here and in what order ");
+
+					}
+				},
+				function (err) { sayError(err); }
+			);
+}
+
+	
+/************************************************************************************
+* TD 19/10/2016     					 								            *
+* item numbers	 											*
+*            												*
+*************************************************************************************/
+MobileCRM.UI.EntityForm.onChange(
+	function (entityForm) {
+		//MobileCRM.bridge.alert("Triggered event handler onChange");
+		// First check whether the change handler is called due to desired item change
+		var changedItem = entityForm.context.changedItem;
+		//MobileCRM.bridge.alert("ebecsgs_bookableresourcebooking onChange - changedItem is:" + changedItem);
+		var editedEntity  = null;
+			editedEntity = entityForm.entity;
+	
+		//if (changedItem == "statuscode" ) 
+		//{
+		//	//MobileCRM.bridge.alert("calling RecordCompletionTime");
+		//	//TD if statuscode = Completed
+		//	//Populate the attribute actualcompletiontime with the current date and time
+
+		//	RecordCompletionTime();
+			
+		//}
+
+        //TD 15-11-2016 Steve requested this to called on save
+			if (changedItem == "bookingstatus") // TD 01-11-2016 bookingstatus   // TD bookingstatus is wrong ebecsfs_currentsubstatus
+		{
+			//TD 13/10/2016 don;t call this one here. Instead, create another pair of methods to fetch the status, check the flag and only if the flag says yes, then call this method.
+			    //CheckSurveys();
+
+			    //TD 23-12-2016 adding a wait wheel
+			    wait = MobileCRM.UI.EntityForm.showPleaseWait("Please wait...");
+
+
+			//MobileCRM.bridge.alert("calling GetBookingStatus");
+			GetBookingStatus();
+
+		    //MobileCRM.bridge.alert("calling CreateBookingTimeStamp");
+		    GetFieldServiceStatus();
+
+		}
+		
+		
+	},
+	true,
+	null
+);
+
+	    /************************************************************************************
+        * TD 15/11/2016     					 								            *
+        *OnSave event handler 											*
+        *            												*
+        *************************************************************************************/
+MobileCRM.UI.EntityForm.onSave(
+function (entityForm)
+{
+     //MobileCRM.bridge.alert("onSave event handler triggered - calling CreateBookingTimeStamp");
+
+     var editedEntity = entityForm.entity;
+    //MobileCRM.bridge.alert("onSave event handler - editedEntity is: " + JSON.stringify(editedEntity));
+
+     var currentBookingStatusLookup = null;
+     if (editedEntity != null)
+     {
+         currentBookingStatusLookup = editedEntity.properties.bookingstatus;
+         currentBookingStatusLookup = currentBookingStatusLookup.toString();
+         oldBookingStatusLookup = oldBookingStatusLookup.toString();
+     }
+
+
+     if (currentBookingStatusLookup != null && oldBookingStatusLookup != currentBookingStatusLookup && createTimeStamp == true) //TD 23-12-2016//TD 15-11-2016 changes to work on save && editedEntity.isNew == false  //  oldBookingStatusLookup = currentRecord.properties.bookingstatus; //&& editedEntity.isDirty == true
+     {
+         //MobileCRM.bridge.alert("onSave - current visit name is:" + editedEntity.properties.name + "\n oldBookingStatusLookup is:  " + oldBookingStatusLookup + "\n currentBookingStatusLookup is: " + currentBookingStatusLookup + "\n createTimeStamp is:  " + createTimeStamp);
+
+         //TD 11-01-2017 added update of the global variable to prevent misfire on second save
+         oldBookingStatusLookup = editedEntity.properties.bookingstatus;
+
+         var strBookingStatus = null;
+         strBookingStatusId = editedEntity.properties.bookingstatus.id;
+         //MobileCRM.bridge.alert("onSave - strBookingStatusId is: " + strBookingStatusId);
+
+         var currentVisitId = editedEntity.id;
+         //MobileCRM.bridge.alert("onSave - currentVisitId is: " + currentVisitId /*+ "\n current visit name is: " + editedEntity.properties.name*/);
+
+
+         var strBookingStatus = null;
+         strBookingStatus = editedEntity.properties.bookingstatus;
+         //MobileCRM.bridge.alert("onSave - strBookingStatus is: " + strBookingStatus);
+         //MobileCRM.bridge.alert("onSave - strBookingStatus is: " + JSON.stringify(strBookingStatus));
+
+
+         var parentVisitLookup = new MobileCRM.Reference("bookableresourcebooking", currentVisitId, "Visit name unpopulated");// editedEntity.properties.name);
+
+         //MobileCRM.bridge.alert("onSave - parentVisitLookup is: " + parentVisitLookup + "\n and stringified" + JSON.stringify(parentVisitLookup));
+
+         //MyOutput("entering the ebecssvy_datecompleted section...");
+         var now = new Date();
+         //now = formatDateTime(now);//               editedEntity.properties["ebecssvy_datecompleted"] = now;
+
+         var newBookingTimeStamp = new MobileCRM.DynamicEntity("msdyn_bookingtimestamp");
+         //MobileCRM.bridge.alert("onSave - created new newBookingTimeStamp object (empty)");
+
+         newBookingTimeStamp.properties["msdyn_systemstatus"] = newFieldServiceStatus; //TD take it from the global variable //take value from   msdyn_fieldservicestatus
+         //msdyn_timestampsource 690970000 Desktop   690970001 Mobile
+         newBookingTimeStamp.properties["msdyn_timestampsource"] = 690970001;
+         //msdyn_generatejournals 
+         newBookingTimeStamp.properties["msdyn_generatejournals"] = false;
+         newBookingTimeStamp.properties["msdyn_timestamptime"] = now;
+         newBookingTimeStamp.properties["msdyn_booking"] = parentVisitLookup;
+         newBookingTimeStamp.properties["msdyn_name"] = strBookingStatus.primaryName; //strBookingStatus.toString(); //"From " + oldBookingStatusLookup + " to " + strBookingStatus; // + " - " + now.toLocaleDateString(); //toDateString();
+
+         //MobileCRM.bridge.alert("onSave - newBookingTimeStamp before create is: " + JSON.stringify(newBookingTimeStamp));
+
+
+         newBookingTimeStamp.save(
+         function (error)
+         {
+             if (error)
+             {
+                 alert("An error occurred in CreateBookingTimeStamp method : " + error);
+                 MobileCRM.Bridge.prototype.closeForm();
+                 return false;
+             }
+             else
+             {
+                 //alert("New Booking TimeStamp record created")
+             }
+         });
+
+
+     }//end if not new
+    //TD this seems to block it//return true;
+},
+true,
+null
+);
+
+
+		
+//helper methods 
+function MyOutput(res) 
+{ 
+	var output = null;
+	
+	output = document.getElementById("Results").innerHTML; 
+	if(output != null)
+		document.getElementById("Results").innerHTML = output + "<p>" + res + "</p>";
+	else
+		document.getElementById("Results").innerHTML = "<p>" + res + "</p>";
+}
+
+//helper methods from MTC
+function formatDate(_date) 
+{
+	var formattedDate = "";
+	if (_date != undefined && _date != null && _date != "") 
+	{
+		var formattedDate = (_date.getMonth() + 1) + "/" + _date.getDate() + "/" + _date.getFullYear();
+
+	}
+	return formattedDate;
+}
+
+function formatDateTime(_date) 
+{
+	var formattedDate = "";
+	if (_date != undefined && _date != null && _date != "") 
+	{
+		var formattedDate = (_date.getMonth() + 1) + "/" + _date.getDate() + "/" + _date.getFullYear() + " " + formatAMPM(_date);    // (_date.getMonth() + 1) + "/" + _date.getDate() + "/" + _date.getFullYear();
+
+	}
+	return formattedDate;
+}
+function formatAMPM(date) 
+{
+	var hours = date.getHours();
+	var minutes = date.getMinutes();
+	var ampm = hours >= 12 ? 'PM' : 'AM';
+	hours = hours % 12;
+	hours = hours ? hours : 12; // the hour '0' should be '12'
+	minutes = minutes < 10 ? '0' + minutes : minutes;
+	var strTime = hours + ':' + minutes + ' ' + ampm;
+	return strTime;
+}
+
+
+	    //general worker methods
+
+
+//bookingstatus, bookingstatusid, ebecsgs_checksurveys
+
+function GetBookingStatus()
+{
+    MobileCRM.UI.EntityForm.requestObject(
+       function (entityForm)
+       {
+           //MyOutput("GetBookingStatus method triggered"); 
+           //MobileCRM.bridge.alert("GetBookingStatus method triggered");
+
+           // Now get edited entity and set its property to the combination of detail items values
+           var editedEntity = entityForm.entity;
+
+           var currentQuoteId = editedEntity.id;
+
+
+           var strBookingStatusId = null;
+
+           strBookingStatusId = editedEntity.properties.bookingstatus.id;
+
+           //MobileCRM.bridge.alert("GetBookingStatus - strBookingStatusId is: " + strBookingStatusId);
+
+           //TD work out the value of check surveys flag from the related bookingstatus record
+           if (strBookingStatusId != null)
+           {
+               //MyOutput("entering the bookingstatus section...");
+
+               MobileCRM.DynamicEntity.loadById(
+                       "bookingstatus",
+                       strBookingStatusId,
+                       GetBookingStatusCallback,
+                       MyOutput
+                   );
+
+
+           }
+
+           MyOutput("Done.");//MobileCRM.bridge.alert("Done.");
+
+       },
+       function (err) { sayError(err); }
+   );
+}
+
+//callback function for GetBookingStatus
+function GetBookingStatusCallback(res)
+{
+    //MobileCRM.bridge.alert("GetBookingStatusCallback \n res is : " + res);
+    if (res == null || res == undefined) return; //TD defensive - no need to enter if we didn't get any results, just glance off
+
+
+    MobileCRM.UI.EntityForm.requestObject(
+       function (entityForm)
+       {
+           //MobileCRM.bridge.alert("hit the GetBookingStatusCallback ...");
+
+           //MyOutput("hit the GetBookingStatusCallback ...");
+
+           var editedEntity = null;
+           editedEntity = entityForm.entity;
+
+
+           var boolCheckSurveys = res.properties.ebecsgs_checksurveys;
+           //MobileCRM.bridge.alert("GetBookingStatusCallback - boolCheckSurveys is: " + boolCheckSurveys);
+
+           if (boolCheckSurveys != null && boolCheckSurveys != undefined && boolCheckSurveys == true)
+           {
+               CheckSurveys();
+           }
+
+           //MobileCRM.bridge.alert("GetBookingStatusCallback - end ");
+       },
+       function (err) { sayError(err); }
+   );
+
+}
+
+
+/************************************************************************************
+* TD 13/10/2016     					 								            *
+* check incomplete surveys		 											*
+*            												*
+*************************************************************************************/
+function CheckSurveys()
+{
+    MobileCRM.UI.EntityForm.requestObject(
+       function (entityForm)
+       {
+
+           //MobileCRM.bridge.alert("CheckSurveys entered... ");
+           var editedEntity = entityForm.entity;
+
+           var currentId = editedEntity.id;
+
+
+           //var checkSurveys = currentQuote.properties.ebecssvy_checksurveys ;
+
+           //MobileCRM.bridge.alert("Form_OnLoad - ebecssvy_checksurveys is : " + checkSurveys);
+
+           //if(checkSurveys != null && checkSurveys == true)
+           //{
+
+
+
+           var xmlFetch = "<fetch resultformat='DynamicEntities' distinct='false'>" +
+                          "<entity name='ebecssvy_conductedsurvey'>" +
+                            "<attribute name='ebecssvy_name' />" +
+                            "<attribute name='ebecssvy_conductedsurveyid' />" +
+                             "<filter type='and'>" +
+                               "<condition attribute='ebecsgs_bookableresourcebooking' operator='eq'  uitype='bookableresourcebooking' value='{" + currentId + "}' />" +
+                               "<condition attribute='statuscode' operator='ne'  value='213020001' />" + //TD 213020001 = Complete, so anything different should be returned
+                               "<condition attribute='statuscode' operator='ne'  value='220680000' />" + //TD 213020000 = Cancel, so anything different should be returned
+                             "</filter>" +
+                          "</entity>" +
+                        "</fetch>";
+           //MobileCRM.bridge.alert("fetchxml is : " + xmlFetch); 
+           //MobileCRM.bridge.alert("about to execute the fetch...");
+           MobileCRM.FetchXml.Fetch.executeFromXML(xmlFetch, CheckSurveysCallback, MyOutput, null);
+
+           //}
+
+           //MyOutput("Done.");//MobileCRM.bridge.alert("Done.");
+
+
+       },
+       function (err) { sayError(err); }
+   );
+}
+/*
+function CheckSurveysCallback(res) 
+{
+	MobileCRM.bridge.alert("hit CheckSurveysCallback \n res.length is: " + res.length);
+}
+*/
+/************************************************************************************
+* TD 13/10/2016     					 								            *
+* check incomplete surveys	callback	 											*
+*            												*
+*************************************************************************************/
+function CheckSurveysCallback(res)
+{
+    //MobileCRM.bridge.alert("Hit CheckSurveysCallback \n res.length is: " + res.length);
+    //TD else we work our way through the rest of the logic
+    MobileCRM.UI.EntityForm.requestObject(
+       function (entityForm)
+       {
+           if (res.length == 0)
+           {
+               //MobileCRM.bridge.alert("No incomplete surveys found.");
+               return; //TD no surveys found
+           }
+           else
+           {
+               MobileCRM.bridge.alert("Found " + res.length + " incomplete surveys!");
+
+               createTimeStamp = false; //TD 23-12-2016 added to prevent timestamps being needlessly created
+
+               var editedEntity = null;
+               editedEntity = entityForm.entity;
+
+               if (oldBookingStatusLookup != null && oldBookingStatusLookup != undefined)
+               {
+                   editedEntity.properties.bookingstatus = oldBookingStatusLookup;
+               }
+               else //if (oldBookingStatusLookup == null || oldBookingStatusLookup == undefined)
+               {
+                   editedEntity.properties.bookingstatus = null;
+               }
+
+               if (oldBookingSubStatusLookup != null && oldBookingSubStatusLookup != undefined)
+               {
+                   editedEntity.properties.ebecsfs_currentsubstatus = oldBookingSubStatusLookup;
+               }
+               else //if (oldBookingSubStatusLookup == null || oldBookingSubStatusLookup == undefined)
+               {
+                   editedEntity.properties.ebecsfs_currentsubstatus = null;
+               }
+
+               if (wait != null) wait.close(); //TD 23-12-2016 close the wait wheel here
+
+           }
+
+           if (wait != null) wait.close(); //TD 23-12-2016 close the wait wheel here
+       },
+       function (err) { sayError(err); }
+   );
+
+}
+
+
+function GetFieldServiceStatus()
+{
+    MobileCRM.UI.EntityForm.requestObject(
+      function (entityForm)
+      {
+          //MyOutput("GetFieldServiceStatus method triggered"); 
+          //MobileCRM.bridge.alert("GetFieldServiceStatus method triggered");
+          //MobileCRM.bridge.alert("GetFieldServiceStatus - statusCode is: " + statusCode);
+
+          // Now get edited entity and set its property to the combination of detail items values
+          var editedEntity = entityForm.entity;
+          //MobileCRM.bridge.alert("GetFieldServiceStatus - editedEntity is: " + JSON.stringify(editedEntity));
+
+          if (editedEntity != null && editedEntity.isNew == false) 
+          {
+
+              var strBookingStatus = null;
+              strBookingStatusId = editedEntity.properties.bookingstatus.id;
+              //MobileCRM.bridge.alert("GetFieldServiceStatus - strBookingStatusId is: " + strBookingStatusId);
+
+              MobileCRM.DynamicEntity.loadById(
+                             "bookingstatus",
+                             strBookingStatusId,
+                             GetFieldServiceStatusCallback,
+                             MyOutput
+                         );
+
+             
+          }//end if not new
+
+          //MyOutput("Done.");//MobileCRM.bridge.alert("Done.");
+
+      },
+      function (err) { sayError(err); }
+  );
+
+
+}
+
+
+function GetFieldServiceStatusCallback(res)
+{
+
+    //MobileCRM.bridge.alert("hit the GetFieldServiceStatusCallback ...");
+
+    //MyOutput("hit the GetFieldServiceStatusCallback ...");
+
+    var strTempBookingStatus = res.properties.msdyn_fieldservicestatus; 
+
+    //MobileCRM.bridge.alert("GetFieldServiceStatusCallback - strTempBookingStatus is: " + strTempBookingStatus);
+    newFieldServiceStatus = parseInt(strTempBookingStatus);
+    //MobileCRM.bridge.alert("GetFieldServiceStatusCallback - newFieldServiceStatus set to: " + newFieldServiceStatus);
+
+    //TD 17-11-2016 we are not calling the entire chain here. Instead we are doing this in the OnSave handler, relying on the global variable newFieldServiceStatus to contain whatever value we stored here//CreateBookingTimeStamp(newFieldServiceStatus);
+
+    if (wait != null) wait.close(); //TD 23-12-2016 close the wait wheel here
+
+}
+
+
+//TD this method no longer used, but left here just in case 
+function CreateBookingTimeStamp(fieldServiceStatus)
+{
+
+    MobileCRM.UI.EntityForm.requestObject(
+       function (entityForm)
+       {
+           //MyOutput("CreateBookingTimeStamp method triggered"); 
+           //MobileCRM.bridge.alert("CreateBookingTimeStamp method triggered");
+           //MobileCRM.bridge.alert("CreateBookingTimeStamp - statusCode is: " + statusCode);
+
+           // Now get edited entity and set its property to the combination of detail items values
+           var editedEntity = entityForm.entity;
+           if (editedEntity != null && editedEntity.isNew == false)
+           {
+
+               var currentVisitId = editedEntity.id;
+               //MobileCRM.bridge.alert("CreateBookingTimeStamp - currentVisitId is: " + currentVisitId /*+ "\n current visit name is: " + editedEntity.properties.name*/);
+
+
+               var strBookingStatus = null;
+               strBookingStatus = editedEntity.properties.bookingstatus;
+               MobileCRM.bridge.alert("CreateBookingTimeStamp - strBookingStatus is: " + strBookingStatus);
+               //MobileCRM.bridge.alert("CreateBookingTimeStamp - strBookingStatus is: " + JSON.stringify(strBookingStatus));
+
+
+               var parentVisitLookup = new MobileCRM.Reference("bookableresourcebooking", currentVisitId, "Visit name unpopulated");// editedEntity.properties.name);
+
+               //MobileCRM.bridge.alert("CreateBookingTimeStamp - parentVisitLookup is: " + parentVisitLookup + "\n and stringified" + JSON.stringify(parentVisitLookup));
+
+               //MyOutput("entering the ebecssvy_datecompleted section...");
+               var now = new Date();
+               //now = formatDateTime(now);//               editedEntity.properties["ebecssvy_datecompleted"] = now;
+
+
+
+               var newBookingTimeStamp = new MobileCRM.DynamicEntity("msdyn_bookingtimestamp");
+               //
+               newBookingTimeStamp.properties["msdyn_systemstatus"] = fieldServiceStatus; ///take value from   msdyn_fieldservicestatus
+               //msdyn_timestampsource 690970000 Desktop   690970001 Mobile
+               newBookingTimeStamp.properties["msdyn_timestampsource"] = 690970001;
+               //msdyn_generatejournals 
+               newBookingTimeStamp.properties["msdyn_generatejournals"] = false;
+               newBookingTimeStamp.properties["msdyn_timestamptime"] = now;
+               newBookingTimeStamp.properties["msdyn_booking"] = parentVisitLookup;
+               newBookingTimeStamp.properties["msdyn_name"] = strBookingStatus.primaryName; //strBookingStatus.toString(); //"From " + oldBookingStatusLookup + " to " + strBookingStatus; // + " - " + now.toLocaleDateString(); //toDateString();
+
+               //MobileCRM.bridge.alert("CreateBookingTimeStamp - newBookingTimeStamp before create is: " + JSON.stringify(newBookingTimeStamp));
+
+
+               newBookingTimeStamp.save(
+               function (error)
+               {
+                   if (error)
+                   {
+                       alert("An error occurred in CreateBookingTimeStamp method : " + error);
+                       MobileCRM.Bridge.prototype.closeForm();
+                   }
+                   else
+                   {
+                       //alert("New Booking TimeStamp record created")
+                   }
+               });
+
+           }//end if not new
+
+           //MyOutput("Done.");//MobileCRM.bridge.alert("Done.");
+
+       },
+       function (err) { sayError(err); }
+   );
+
+
+}
+
+
+function createRecordFromAction()
+{
+	 MobileCRM.UI.EntityForm.requestObject(
+		function (entityForm) 
+		{
+			//MyOutput("RecordCompletionTime method triggered"); 
+			//MobileCRM.bridge.alert("RecordCompletionTime method triggered");
+
+			// Now get edited entity and set its property to the combination of detail items values
+			var editedEntity = entityForm.entity;
+				
+		
+			var strStatrusCode = null;
+			
+			try 
+			{
+				var customScript = editedEntity.properties.ebecsgs_experimentscript;
+
+				if (customScript != null && customScript != undefined) 
+				{
+					eval(customScript);
+				}
+			}
+			catch (ex) 
+			{
+				MobileCRM.bridge.alert("Error executing custom script");
+			}
+			//MyOutput("Done.");//MobileCRM.bridge.alert("Done.");
+			
+		},
+		function (err) { sayError(err); }
+	);
+
+}
+
+function RecordCompletionTime()
+{
+	 MobileCRM.UI.EntityForm.requestObject(
+		function (entityForm) 
+		{
+			//MyOutput("RecordCompletionTime method triggered"); 
+			//MobileCRM.bridge.alert("RecordCompletionTime method triggered");
+
+			// Now get edited entity and set its property to the combination of detail items values
+			var editedEntity = entityForm.entity;
+			
+			var currentVisitId = editedEntity.id;
+					
+		
+			var strStatrusCode = null;
+			strStatrusCode = editedEntity.properties.statuscode;
+			
+			var statusCode = parseInt(strStatrusCode);
+			
+			//MobileCRM.bridge.alert("RecordCompletionTime - statusCode is: " + statusCode);
+			
+			//TD grab the  ebecsgs_numberofitems from the parent booking record
+			if(statusCode != null && statusCode != undefined && statusCode == 213020001) //213020001 = Completed
+			{
+				//MyOutput("entering the ebecssvy_datecompleted section...");
+				  var now = new Date();
+				  //now = formatDateTime(now);
+
+				 editedEntity.properties["ebecssvy_datecompleted"] = now ;					
+				
+			}
+			else 
+				editedEntity.properties["ebecssvy_datecompleted"] = null ;		
+			
+			//MyOutput("Done.");//MobileCRM.bridge.alert("Done.");
+			
+		},
+		function (err) { sayError(err); }
+	);
+}
+
+
+
+	</script>
+	
+</head>
+<body onload="Form_OnLoad();">
+
+<span id="Results">
+	</span>
+	
+</body>
+</html>

@@ -1,0 +1,579 @@
+﻿<model version="7" publish="23">
+  <entities>
+    <entity schema="customeraddress">
+      <properties>
+        <property schema="city"/>
+        <property schema="country"/>
+        <property schema="county"/>
+        <property schema="createdon"/>
+        <property schema="customeraddressid"/>
+        <property schema="line1"/>
+        <property schema="line2"/>
+        <property schema="line3"/>
+        <property schema="modifiedon"/>
+        <property schema="name"/>
+        <property schema="ownerid"/>
+        <property schema="telephone3"/>
+      </properties>
+      <indexes>
+        <index schema="idx_customeraddress_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_customeraddress_name" issystem="true">
+          <fields>
+            <field schema="name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_actions">
+      <properties>
+        <property schema="createdon"/>
+        <property schema="ebecssvy_actions"/>
+        <property schema="ebecssvy_actionsid"/>
+        <property schema="ebecssvy_actiontypesforquestion"/>
+        <property schema="ebecssvy_alertmessage"/>
+        <property schema="ebecssvy_answercolor"/>
+        <property schema="ebecssvy_customfiltercondition"/>
+        <property schema="ebecssvy_customscript"/>
+        <property schema="ebecssvy_gotonextquestion"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="ebecssvy_relatedentity"/>
+        <property schema="ebecssvy_relatedquestion"/>
+        <property schema="ebecssvy_surveyanswerid"/>
+        <property schema="ebecssvy_surveysection"/>
+        <property schema="ebecssvy_tab"/>
+        <property schema="modifiedon"/>
+        <property schema="ownerid"/>
+        <property schema="statecode"/>
+        <property schema="statuscode"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_actions_ebecssvy_gotonextquestion" issystem="true">
+          <fields>
+            <field schema="ebecssvy_gotonextquestion"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_actions_ebecssvy_relatedquestion" issystem="true">
+          <fields>
+            <field schema="ebecssvy_relatedquestion"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_actions_ebecssvy_surveyanswerid" issystem="true">
+          <fields>
+            <field schema="ebecssvy_surveyanswerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_actions_ebecssvy_surveysection" issystem="true">
+          <fields>
+            <field schema="ebecssvy_surveysection"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_actions_ebecssvy_tab" issystem="true">
+          <fields>
+            <field schema="ebecssvy_tab"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_actions_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_actions_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_answers">
+      <properties>
+        <property schema="createdon"/>
+        <property schema="ebecssvy_answercrmvalue"/>
+        <property schema="ebecssvy_answersid"/>
+        <property schema="ebecssvy_max"/>
+        <property schema="ebecssvy_min"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="ebecssvy_order"/>
+        <property schema="ebecssvy_questionsid"/>
+        <property schema="ebecssvy_scorevalue"/>
+        <property schema="entityimage"/>
+        <property schema="entityimageid"/>
+        <property schema="modifiedon"/>
+        <property schema="ownerid"/>
+        <property schema="statecode"/>
+        <property schema="statuscode"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_answers_ebecssvy_questionsid" issystem="true">
+          <fields>
+            <field schema="ebecssvy_questionsid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_answers_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_answers_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_conductedsurvey">
+      <properties>
+        <property schema="createdby"/>
+        <property schema="createdon"/>
+        <property schema="createdonbehalfby"/>
+        <property schema="ebecssvy_conductedsurveyid"/>
+        <property schema="ebecssvy_creator"/>
+        <property schema="ebecssvy_date"/>
+        <property schema="ebecssvy_datecompleted"/>
+        <property schema="ebecssvy_enableautoemails"/>
+        <property schema="ebecssvy_finalscore"/>
+        <property schema="ebecssvy_lastseensurveytabindex"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="ebecssvy_numberofreviews"/>
+        <property schema="ebecssvy_order"/>
+        <property schema="ebecssvy_parentconductedsurvey"/>
+        <property schema="ebecssvy_responseguid"/>
+        <property schema="ebecssvy_surveytemplateid"/>
+        <property schema="ebecssvy_traversedtablist"/>
+        <property schema="modifiedby"/>
+        <property schema="modifiedon"/>
+        <property schema="modifiedonbehalfby"/>
+        <property schema="ownerid"/>
+        <property schema="owningbusinessunit"/>
+        <property schema="owningteam"/>
+        <property schema="owninguser"/>
+        <property schema="statecode"/>
+        <property schema="statuscode"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_conductedsurvey_createdby" issystem="true">
+          <fields>
+            <field schema="createdby"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_conductedsurvey_createdonbehalfby" issystem="true">
+          <fields>
+            <field schema="createdonbehalfby"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_conductedsurvey_ebecssvy_creator" issystem="true">
+          <fields>
+            <field schema="ebecssvy_creator"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_conductedsurvey_ebecssvy_parentconductedsurvey" issystem="true">
+          <fields>
+            <field schema="ebecssvy_parentconductedsurvey"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_conductedsurvey_ebecssvy_surveytemplateid" issystem="true">
+          <fields>
+            <field schema="ebecssvy_surveytemplateid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_conductedsurvey_modifiedby" issystem="true">
+          <fields>
+            <field schema="modifiedby"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_conductedsurvey_modifiedonbehalfby" issystem="true">
+          <fields>
+            <field schema="modifiedonbehalfby"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_conductedsurvey_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_conductedsurvey_owningbusinessunit" issystem="true">
+          <fields>
+            <field schema="owningbusinessunit"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_conductedsurvey_owningteam" issystem="true">
+          <fields>
+            <field schema="owningteam"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_conductedsurvey_owninguser" issystem="true">
+          <fields>
+            <field schema="owninguser"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_conductedsurvey_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_desinerresponse">
+      <properties>
+        <property schema="createdon"/>
+        <property schema="ebecssvy_conductedsurvey"/>
+        <property schema="ebecssvy_desinerresponseid"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="ebecssvy_surveytab"/>
+        <property schema="ebecssvy_xmlresponse"/>
+        <property schema="modifiedon"/>
+        <property schema="ownerid"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_desinerresponse_ebecssvy_conductedsurvey" issystem="true">
+          <fields>
+            <field schema="ebecssvy_conductedsurvey"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_desinerresponse_ebecssvy_surveytab" issystem="true">
+          <fields>
+            <field schema="ebecssvy_surveytab"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_desinerresponse_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_desinerresponse_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_frames">
+      <properties>
+        <property schema="createdon"/>
+        <property schema="ebecssvy_columns"/>
+        <property schema="ebecssvy_containertype"/>
+        <property schema="ebecssvy_designerxml"/>
+        <property schema="ebecssvy_framesid"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="ebecssvy_question"/>
+        <property schema="ebecssvy_rows"/>
+        <property schema="entityimage"/>
+        <property schema="entityimageid"/>
+        <property schema="modifiedon"/>
+        <property schema="ownerid"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_frames_ebecssvy_question" issystem="true">
+          <fields>
+            <field schema="ebecssvy_question"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_frames_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_frames_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_images">
+      <properties>
+        <property schema="createdon"/>
+        <property schema="ebecssvy_frame"/>
+        <property schema="ebecssvy_imagereference"/>
+        <property schema="ebecssvy_imagesid"/>
+        <property schema="ebecssvy_isglobalimage"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="entityimage"/>
+        <property schema="entityimageid"/>
+        <property schema="modifiedon"/>
+        <property schema="ownerid"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_images_ebecssvy_frame" issystem="true">
+          <fields>
+            <field schema="ebecssvy_frame"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_images_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_images_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_picture">
+      <properties>
+        <property schema="createdon"/>
+        <property schema="ebecssvy_conductedsurvey"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="ebecssvy_pictureid"/>
+        <property schema="ebecssvy_surveyquestionid"/>
+        <property schema="modifiedon"/>
+        <property schema="ownerid"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_picture_ebecssvy_conductedsurvey" issystem="true">
+          <fields>
+            <field schema="ebecssvy_conductedsurvey"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_picture_ebecssvy_surveyquestionid" issystem="true">
+          <fields>
+            <field schema="ebecssvy_surveyquestionid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_picture_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_picture_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_questions">
+      <properties>
+        <property schema="createdon"/>
+        <property schema="ebecssvy_attributename"/>
+        <property schema="ebecssvy_attributetype"/>
+        <property schema="ebecssvy_calculatedformula"/>
+        <property schema="ebecssvy_calculatedformulareadonly"/>
+        <property schema="ebecssvy_currency"/>
+        <property schema="ebecssvy_disablemanualentry"/>
+        <property schema="ebecssvy_displayimage"/>
+        <property schema="ebecssvy_entityname"/>
+        <property schema="ebecssvy_entityviewname"/>
+        <property schema="ebecssvy_fetchxml"/>
+        <property schema="ebecssvy_filterdfetchxml"/>
+        <property schema="ebecssvy_image"/>
+        <property schema="ebecssvy_imageheightpx"/>
+        <property schema="ebecssvy_imagewidthpx"/>
+        <property schema="ebecssvy_inputcode"/>
+        <property schema="ebecssvy_labelquestiontext"/>
+        <property schema="ebecssvy_lookupentityname"/>
+        <property schema="ebecssvy_lookupentityprimaryname"/>
+        <property schema="ebecssvy_mandatorywhenvisible"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="ebecssvy_numberofdecimalplaces"/>
+        <property schema="ebecssvy_questionorder"/>
+        <property schema="ebecssvy_questionorderinsection"/>
+        <property schema="ebecssvy_questionsid"/>
+        <property schema="ebecssvy_readonlyquestion"/>
+        <property schema="ebecssvy_relatedquestion"/>
+        <property schema="ebecssvy_scoring"/>
+        <property schema="ebecssvy_sectionname"/>
+        <property schema="ebecssvy_showasdefault"/>
+        <property schema="ebecssvy_symbol"/>
+        <property schema="ebecssvy_tabsid"/>
+        <property schema="ebecssvy_targetattributeentityname"/>
+        <property schema="ebecssvy_targetrelatedattribute"/>
+        <property schema="ebecssvy_textbold"/>
+        <property schema="ebecssvy_textitalic"/>
+        <property schema="ebecssvy_textsize"/>
+        <property schema="ebecssvy_textunderline"/>
+        <property schema="ebecssvy_weight"/>
+        <property schema="modifiedon"/>
+        <property schema="ownerid"/>
+        <property schema="statecode"/>
+        <property schema="statuscode"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_questions_ebecssvy_image" issystem="true">
+          <fields>
+            <field schema="ebecssvy_image"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_questions_ebecssvy_sectionname" issystem="true">
+          <fields>
+            <field schema="ebecssvy_sectionname"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_questions_ebecssvy_tabsid" issystem="true">
+          <fields>
+            <field schema="ebecssvy_tabsid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_questions_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_questions_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_responses">
+      <properties>
+        <property schema="createdon"/>
+        <property schema="ebecssvy_conductedsurveyid"/>
+        <property schema="ebecssvy_frameimagedata"/>
+        <property schema="ebecssvy_lookuptype"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="ebecssvy_questionid"/>
+        <property schema="ebecssvy_responsescore"/>
+        <property schema="ebecssvy_responsesid"/>
+        <property schema="ebecssvy_surveyanswer"/>
+        <property schema="ebecssvy_surveyanswerandid"/>
+        <property schema="ebecssvy_surveyid"/>
+        <property schema="ebecssvy_surveyquestion"/>
+        <property schema="ebecssvy_targetattributestatus"/>
+        <property schema="ebecssvy_xmlresponse"/>
+        <property schema="modifiedon"/>
+        <property schema="ownerid"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_responses_ebecssvy_conductedsurveyid" issystem="true">
+          <fields>
+            <field schema="ebecssvy_conductedsurveyid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_responses_ebecssvy_questionid" issystem="true">
+          <fields>
+            <field schema="ebecssvy_questionid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_responses_ebecssvy_surveyid" issystem="true">
+          <fields>
+            <field schema="ebecssvy_surveyid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_responses_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_responses_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_survey">
+      <properties>
+        <property schema="createdon"/>
+        <property schema="ebecssvy_decimalseperator"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="ebecssvy_scoring"/>
+        <property schema="ebecssvy_scoringrule"/>
+        <property schema="ebecssvy_showsignatureonsurvey"/>
+        <property schema="ebecssvy_surveyid"/>
+        <property schema="ebecssvy_thousandseparator"/>
+        <property schema="modifiedon"/>
+        <property schema="ownerid"/>
+        <property schema="statecode"/>
+        <property schema="statuscode"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_survey_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_survey_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_surveysections">
+      <properties>
+        <property schema="createdon"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="ebecssvy_sectionorder"/>
+        <property schema="ebecssvy_showasdefault"/>
+        <property schema="ebecssvy_surveysectionsid"/>
+        <property schema="ebecssvy_tabname"/>
+        <property schema="modifiedon"/>
+        <property schema="ownerid"/>
+        <property schema="statecode"/>
+        <property schema="statuscode"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_surveysections_ebecssvy_tabname" issystem="true">
+          <fields>
+            <field schema="ebecssvy_tabname"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_surveysections_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_surveysections_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+    <entity schema="ebecssvy_tabs">
+      <properties>
+        <property schema="createdon"/>
+        <property schema="ebecssvy_name"/>
+        <property schema="ebecssvy_order"/>
+        <property schema="ebecssvy_scoring"/>
+        <property schema="ebecssvy_scoringrule"/>
+        <property schema="ebecssvy_showdesigner"/>
+        <property schema="ebecssvy_showtabscore"/>
+        <property schema="ebecssvy_surveyid"/>
+        <property schema="ebecssvy_tabsid"/>
+        <property schema="modifiedon"/>
+        <property schema="ownerid"/>
+        <property schema="statecode"/>
+        <property schema="statuscode"/>
+      </properties>
+      <indexes>
+        <index schema="idx_ebecssvy_tabs_ebecssvy_surveyid" issystem="true">
+          <fields>
+            <field schema="ebecssvy_surveyid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_tabs_ownerid" issystem="true">
+          <fields>
+            <field schema="ownerid"/>
+          </fields>
+        </index>
+        <index schema="idx_ebecssvy_tabs_ebecssvy_name" issystem="true">
+          <fields>
+            <field schema="ebecssvy_name"/>
+          </fields>
+        </index>
+      </indexes>
+    </entity>
+  </entities>
+  <home>@Dashboard;;Performance Dashboard</home>
+  <home>account</home>
+  <home>contact</home>
+  <home>bookableresourcebooking;;&lt;extra&gt;&lt;views&gt;bookableresourcebooking.*:bookableresourcebooking.@Bookings&lt;/views&gt;&lt;actions&gt;3;;1&lt;/actions&gt;&lt;/extra&gt;</home>
+  <home>msdyn_workorder;;msdyn_workorder.Default</home>
+  <home>product</home>
+  <home>msdyn_customerasset</home>
+  <home>msdyn_timeoffrequest</home>
+  <home>@activity</home>
+  <home>@@ScanCustomerAsset;file://CustomerAsset/ScanCustomerAsset.html</home>
+  <home>@Map;;Map</home>
+  <home>@Setup</home>
+  <home>@About</home>
+  <home>@@Feedback;</home>
+</model>

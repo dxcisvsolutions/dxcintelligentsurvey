@@ -1,0 +1,85 @@
+ul.sas-progress-bar {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    list-style: none;
+    display:initial;
+}
+
+
+.section {
+    display: inline-block;
+    padding-top: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 16px;
+    color: black;
+    vertical-align: top;
+    position: relative;
+    text-align: center;
+    text-overflow: ellipsis;
+    overflow:hidden;
+    width:100%;
+    white-space: nowrap;
+}
+
+.dot {
+    content: '';
+    position: relative;
+    top: 2px;
+    /*left: calc(50% - 15px);*/
+    z-index: 1;
+    width: 28px;
+    height: 28px;
+    color: white;
+    border: 4px solid gray;
+    border-radius: 20px;
+    background: white;
+}
+
+dot.left{
+    left:1px;
+}
+
+dot.right{
+    right:1px;
+}
+
+.sas-status-bar {
+    height: 2px;
+    background: gray;
+    position: relative;
+    top: 20px;
+    margin: 0 auto;
+}
+.sas-current-status {
+    height: 2px;
+    width: 0;
+    border-radius: 1px;
+    background: green;
+}
+
+.visited {
+    content: '\2714';
+    animation: changeBackground .5s linear;
+    animation-fill-mode: forwards;
+	border: 4px solid green;
+	background: green;
+    padding: 0px;
+    font-size:16px;
+    text-align: center;
+    color:white;
+}
+
+.visited.current {
+	margin-top:2px;
+	/*margin-left:1px;*/
+	content: '';
+    box-shadow: 0 0 0 4px red;
+	border: 5px solid white;
+	width: 21px;
+    height: 21px;
+	text-align: center;
+	background: red;
+}

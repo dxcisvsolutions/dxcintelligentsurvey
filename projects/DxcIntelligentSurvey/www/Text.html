@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+	
+	<script type="text/javascript">
+
+	/*document.ready(function(){
+		MobileCRM.bridge.alert("Inside text");
+		ExecuteAction_GetExistingSurvey();
+		});*/
+
+	function OnLoad(){
+		ExecuteAction_GetExistingSurvey();
+	}
+
+	function ExecuteAction_GetExistingSurvey(){
+		//debugger;
+       var ActionObj = {
+           "surveyTemplateId": "c27c87bf-5286-4f41-9657-75fd86bfeddc",
+       }
+
+        var req = new XMLHttpRequest();
+        req.open("POST", "https://siteassessmentdev.ebecsdemo.com" + "/api/data/v8.2/ebecssvy_GetExistingSurvey", false);
+        req.setRequestHeader("Accept", "application/json");
+        req.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+        req.setRequestHeader("OData-MaxVersion", "4.0");
+        req.setRequestHeader("OData-Version", "4.0");
+        req.onreadystatechange = function () {
+            if (this.readyState == 4 /* complete */) {
+                req.onreadystatechange = null;
+                if (this.status == 200 || this.status == 204) {
+                    
+					if (this.response !== null && typeof this.response !== "undefined" && this.response !== "" && this.response !== "{}") {
+                        var mainRespObj = JSON.parse(this.response);
+						
+                        if (mainRespObj !== null && typeof mainRespObj !== "undefined") {
+
+                            if (mainRespObj.IsLicensed !== null && typeof mainRespObj.IsLicensed !== "undefined") {
+
+                                MobileCRM.bridge.alert("Execute Action GetExistingSurvey");
+                            }
+							else{
+								MobileCRM.bridge.alert("Alert 1");
+							}
+						}
+						else{
+						MobileCRM.bridge.alert("Alert 2");
+						}
+					}	
+					else{
+					MobileCRM.bridge.alert("alert 3");
+					}
+                }
+            }
+        };
+        req.send(JSON.stringify(ActionObj));
+	}
+
+	</script>
+</head>
+<body>
+
+</body>
+</html>

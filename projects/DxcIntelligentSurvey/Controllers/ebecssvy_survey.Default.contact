@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EntityForm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2">
+  <IsContactForm>true</IsContactForm>
+  <EntityName>ebecssvy_survey</EntityName>
+  <CamelCase>ebecssvy_survey</CamelCase>
+  <ClassBinding />
+  <SerializedChildren />
+  <SerializedChildrenV2>
+    <FormTab xsi:type="ContactInfoTab" flexi="0" flexiHeader="1" flexiMaxLines="0">
+      <Name>Contact Info</Name>
+      <SerializedChildren>
+        <DetailItem xsi:type="ContactInfoSection" image="false" separator="false" Section="Address">
+          <IsConstant>false</IsConstant>
+        </DetailItem>
+        <DetailItem SchemaName="ebecssvy_name" image="false" separator="false">
+          <IsConstant>false</IsConstant>
+        </DetailItem>
+        <DetailItem SchemaName="ownerid" image="false" separator="false">
+          <IsConstant>false</IsConstant>
+        </DetailItem>
+        <DetailItem xsi:type="ContactInfoSection" image="false" separator="false" Section="Call">
+          <IsConstant>false</IsConstant>
+        </DetailItem>
+        <DetailItem xsi:type="ContactInfoSection" image="false" separator="false" Section="E-mail">
+          <IsConstant>false</IsConstant>
+        </DetailItem>
+        <DetailItem xsi:type="ContactInfoSection" image="false" separator="false" Section="SMS">
+          <IsConstant>false</IsConstant>
+        </DetailItem>
+        <DetailItem xsi:type="ContactInfoSection" image="false" separator="false" Section="Web">
+          <IsConstant>false</IsConstant>
+        </DetailItem>
+      </SerializedChildren>
+      <CanRename>false</CanRename>
+    </FormTab>
+  </SerializedChildrenV2>
+  <Navigation flexi="0" flexiHeader="1" flexiMaxLines="0">
+    <Name>Navigation</Name>
+    <SerializedChildren />
+  </Navigation>
+  <PrimaryCommands>!defcmd</PrimaryCommands>
+  <EnabledWorkflows>OnLoadEnabled OnChangeEnabled OnSaveEnabled OnExecuteCommand OnCanExecuteCommand</EnabledWorkflows>
+  <SerializedContactInfo />
+</EntityForm>
